@@ -44,11 +44,15 @@ angular.module('themealzApp', [
     };
   })
 
-  .run(function ($rootScope, $location, Auth) {
+  .run(function ($rootScope, $location, Auth, $cookieStore) {
     // Redirect to login if route requires auth and you're not logged in
     $rootScope.$on('$routeChangeStart', function (event, next) {
       Auth.isLoggedInAsync(function(loggedIn) {
         if (next.authenticate && !loggedIn) {
+          // store the requested url if not logged in
+          if ($location.url() != '/login') {
+            $cookieStore.put('returnUrl', $location.url());
+          }
           $location.path('/login');
         }
       });
