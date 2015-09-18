@@ -1,4 +1,4 @@
-'use strict';
+'use strict'; 
 
 angular.module('themealzApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
@@ -14,9 +14,10 @@ angular.module('themealzApp')
       if($scope.newMealOptionTitle === '') {
         return;
       }
-      $http.post('/api/mealOptions', { name: $scope.newMealOptionTitle, info: $scope.newMealOptionInfo, active: $scope.newMealOptionActive });
+      $http.post('/api/mealOptions', { name: $scope.newMealOptionTitle, info: $scope.newMealOptionInfo, parent: $scope.newMealOptionParentId ? $scope.newMealOptionParentId._id : null, active: $scope.newMealOptionActive });
       $scope.newMealOptionTitle = '';
       $scope.newMealOptionInfo = '';
+      $scope.newMealOptionParentId = null;
       $scope.newMealOptionActive = true;
     };
 
@@ -27,4 +28,19 @@ angular.module('themealzApp')
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('mealOption');
     });
+
+    $scope.getItemById = function(arr, id) {
+      if (!Array.isArray(arr)) {
+        return null;
+      }
+
+      var i = arr.length;
+      while (i--) {
+        if (arr[i]._id === id) {
+          return arr[i];
+        }
+      }
+
+      return null;
+    }
   });
