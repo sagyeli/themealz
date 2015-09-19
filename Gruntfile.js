@@ -1,4 +1,4 @@
-// Generated on 2015-06-29 using generator-angular-fullstack 2.0.13
+// Generated on 2015-09-19 using generator-angular-fullstack 2.1.1
 'use strict';
 
 module.exports = function (grunt) {
@@ -16,7 +16,6 @@ module.exports = function (grunt) {
     ngtemplates: 'grunt-angular-templates',
     cdnify: 'grunt-google-cdn',
     protractor: 'grunt-protractor-runner',
-    injector: 'grunt-asset-injector',
     buildcontrol: 'grunt-build-control'
   });
 
@@ -97,7 +96,9 @@ module.exports = function (grunt) {
         files: [
           '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.css',
           '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.html',
+          
           '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.js',
+          
           '!{.tmp,<%= yeoman.client %>}{app,components}/**/*.spec.js',
           '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.mock.js',
           '<%= yeoman.client %>/assets/images/{,*//*}*.{png,jpg,jpeg,gif,webp,svg}'
@@ -300,7 +301,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '.tmp/concat',
-          src: '*/**.js',
+          src: '**/*.js',
           dest: '.tmp/concat'
         }]
       }
@@ -497,10 +498,14 @@ module.exports = function (grunt) {
         },
         files: {
           '<%= yeoman.client %>/index.html': [
-              ['{.tmp,<%= yeoman.client %>}/{app,components}/**/*.js',
-               '!{.tmp,<%= yeoman.client %>}/app/app.js',
-               '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.spec.js',
-               '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.mock.js']
+               [
+                 
+                 '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.js',
+                 
+                 '!{.tmp,<%= yeoman.client %>}/app/app.js',               
+                 '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.spec.js',
+                 '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.mock.js'               
+               ]
             ]
         }
       },
