@@ -7,7 +7,7 @@ var MealOptionSchema = new Schema({
   name: String,
   iconUrl: String,
   info: String,
-  parent: {type: mongoose.Schema.Types.ObjectId, ref: 'MealOption'},
+  children: [{type: mongoose.Schema.Types.ObjectId, ref: 'MealOption'}],
   active: {type: Boolean, default: true }
 });
 

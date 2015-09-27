@@ -13,7 +13,7 @@
     <div class="col-lg-12">
       <h1 class="page-header">Mealz options:</h1>
       <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="mealOption in mealOptions">
-        <li><a href="#" tooltip="{{mealOption.info}}">{{mealOption.name}} ({{(mealOption.active ? 'active' : 'inactive') + ', ' + (mealOption.parent ? 'parent meal option: ' + getItemById(mealOptions, mealOption.parent).name : 'no parent meal option')}})<button type="button" class="close" ng-click="deleteMealOption(mealOption)">&times;</button></a></li>
+        <li><a href="#" tooltip="{{mealOption.info}}">{{mealOption.name}} ({{(mealOption.active ? 'active' : 'inactive') + ', ' + (mealOption.children && mealOption.children.length > 0 ? 'children meal options: ' + pluck(getItemsByProperty(mealOptions, mealOption.children, '_id'), 'name').join(', ') : 'no children meal options')}})<button type="button" class="close" ng-click="deleteMealOption(mealOption)">&times;</button></a></li>
       </ul>
     </div>
   </div>
@@ -34,8 +34,8 @@
       </div>
     </p>
     <p class="form-group">
-      <label for="parent_selector">Select parent meal option:</label>
-      <select id="parent_selector" ng-model="newMealOptionParentId" ng-options="mealOption.name for mealOption in mealOptions track by mealOption._id" ng-model="selected"></select>
+      <label for="children_selector">Select children meal options:</label>
+      <select id="children_selector" ng-model="newMealOptionChildrenIds" ng-options="mealOption.name for mealOption in mealOptions track by mealOption._id" ng-model="selected" multiple></select>
     </p>
     <button type="submit" class="btn btn-primary" ng-click="addMealOption()">Add New</button>
   </form>

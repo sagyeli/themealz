@@ -14,10 +14,10 @@ angular.module('themealzApp')
       if($scope.newMealOptionTitle === '') {
         return;
       }
-      $http.post('/api/mealOptions', { name: $scope.newMealOptionTitle, info: $scope.newMealOptionInfo, parent: $scope.newMealOptionParentId ? $scope.newMealOptionParentId._id : null, active: $scope.newMealOptionActive });
+      $http.post('/api/mealOptions', { name: $scope.newMealOptionTitle, info: $scope.newMealOptionInfo, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, active: $scope.newMealOptionActive });
       $scope.newMealOptionTitle = '';
       $scope.newMealOptionInfo = '';
-      $scope.newMealOptionParentId = null;
+      $scope.newMealOptionChildrenIds = null;
       $scope.newMealOptionActive = true;
     };
 
@@ -42,5 +42,40 @@ angular.module('themealzApp')
       }
 
       return null;
-    }
+    };
+
+    $scope.getItemsByProperty = function(arr, val, key) {
+      if (!Array.isArray(arr)) {
+        return null;
+      }
+
+      var results = [],
+        i = arr.length;
+      while (i--) {
+        if (arr[i]) {
+          if (Array.isArray(val) && val.indexOf(arr[i][key]) >= 0) {
+            results.push(arr[i]);
+          }
+          else if (arr[i][key] === val) {
+            return arr[i];
+          }
+        }
+      }
+
+      return Array.isArray(val) ? results : null;
+    };
+
+    $scope.pluck = function(arr, key) {
+      if (!Array.isArray(arr)) {
+        return null;
+      }
+
+      var results = [],
+        i = arr.length;
+      while (i--) {
+        results.push(arr[i] ? arr[i][key] : null)
+      }
+
+      return results;
+    };
   });

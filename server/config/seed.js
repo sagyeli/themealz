@@ -13,22 +13,22 @@ MealOption.find({}).remove(function() {
     name : 'פיצה / טוסט',
     iconUrl: '',
     info: '',
-    parent: null
+    children: []
   }, {
     name : 'סושי',
     iconUrl: '',
     info: '',
-    parent: null
+    children: []
   }, {
     name : 'כשר',
     iconUrl: '',
     info: '',
-    parent: null
+    children: []
   }, {
     name : 'פלאפל / סביח',
     iconUrl: '',
     info: '',
-    parent: null
+    children: []
   });
 });
 
