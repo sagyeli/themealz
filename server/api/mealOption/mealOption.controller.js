@@ -20,6 +20,18 @@ exports.show = function(req, res) {
   });
 };
 
+// Get the children a single mealOption
+exports.showChildren = function(req, res) {
+  MealOption.findById(req.params.id, function (err, mealOption) {
+    if(err) { return handleError(res, err); }
+    if(!mealOption) { return res.send(404); }
+    MealOption.find({ _id: { $in: mealOption.children } }, function (err, mealOptions) {
+      if(err) { return handleError(res, err); }
+      return res.json(200, mealOptions);
+    });
+  });
+};
+
 // Creates a new mealOption in the DB.
 exports.create = function(req, res) {
   MealOption.create(req.body, function(err, mealOption) {
