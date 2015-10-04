@@ -10,11 +10,12 @@ angular.module('themealzApp')
       socket.syncUpdates('mealOption', $scope.mealOptions);
     });
 
-    $scope.addMealOption = function() {
+    $scope.addOrEditMealOption = function() {
       if($scope.newMealOptionTitle === '') {
         return;
       }
-      $http.post('/api/mealOptions', { name: $scope.newMealOptionTitle, info: $scope.newMealOptionInfo, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, active: $scope.newMealOptionActive });
+      $http[$scope.targetMealOption ? 'put' : 'post']('/api/mealOptions' + ($scope.targetMealOption ? '/' + $scope.targetMealOption._id : ''), { name: $scope.newMealOptionTitle, info: $scope.newMealOptionInfo, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, active: $scope.newMealOptionActive });
+      $scope.targetMealOption = '';
       $scope.newMealOptionTitle = '';
       $scope.newMealOptionInfo = '';
       $scope.newMealOptionChildrenIds = null;
@@ -23,6 +24,27 @@ angular.module('themealzApp')
 
     $scope.deleteMealOption = function(mealOption) {
       $http.delete('/api/mealOptions/' + mealOption._id);
+    };
+
+    $scope.onItemClicked = function(mealOption) {
+      $scope.targetMealOption = mealOption;
+      $scope.onTargetMealOptionChanged();
+    };
+
+    $scope.onTargetMealOptionChanged = function() {
+      if ($scope.targetMealOption) {
+        var item = $scope.getItemById($scope.mealOptions, $scope.targetMealOption._id);
+        $scope.newMealOptionTitle = item.name;
+        $scope.newMealOptionInfo = item.info;
+        $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.children, '_id');
+        $scope.newMealOptionActive = item.active;
+      }
+      else {
+        $scope.newMealOptionTitle = '';
+        $scope.newMealOptionInfo = '';
+        $scope.newMealOptionChildrenIds = null;
+        $scope.newMealOptionActive = true;  
+      }
     };
 
     $scope.$on('$destroy', function () {
