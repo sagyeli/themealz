@@ -22,12 +22,34 @@ exports.show = function(req, res) {
 
 // Get the children a single mealOption
 exports.showChildren = function(req, res) {
+  var getNonAbstractChildren = function(mealOptions, callback) {
+    var i = mealOptions.length,
+      abstractsChildrenIds = [];
+    while (i--) {
+      if (mealOptions[i].abstract) {
+        abstractsChildrenIds = abstractsChildrenIds.concat(mealOptions[i].children);
+        mealOptions.splice(i, 1);
+      }
+    }
+
+    if (abstractsChildrenIds.length > 0) {
+      MealOption.find({ _id: { $in: abstractsChildrenIds } }, function (err, childrenMealOptions) {
+        getNonAbstractChildren(mealOptions.concat(childrenMealOptions), callback);
+      });
+    }
+    else {
+      callback(mealOptions);
+    }
+  };
+
   MealOption.findById(req.params.id, function (err, mealOption) {
     if(err) { return handleError(res, err); }
     if(!mealOption) { return res.send(404); }
     MealOption.find({ _id: { $in: mealOption.children } }, function (err, mealOptions) {
-      if(err) { return handleError(res, err); }
-      return res.json(200, mealOptions);
+      getNonAbstractChildren(mealOptions, function(mealOptions) {
+        if(err) { return handleError(res, err); }
+        return res.json(200, mealOptions);
+      });
     });
   });
 };

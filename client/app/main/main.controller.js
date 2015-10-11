@@ -4,6 +4,7 @@ angular.module('themealzApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
     $scope.mealOptions = [];
     $scope.newMealOptionActive = true;
+    $scope.newMealOptionAbstract = false;
 
     $http.get('/api/mealOptions').success(function(mealOptions) {
       $scope.mealOptions = mealOptions;
@@ -11,15 +12,17 @@ angular.module('themealzApp')
     });
 
     $scope.addOrEditMealOption = function() {
-      if($scope.newMealOptionTitle === '') {
+      if($scope.newMealOptionTitle === '' && $scope.newMealOptionLabel === '') {
         return;
       }
-      $http[$scope.targetMealOption ? 'put' : 'post']('/api/mealOptions' + ($scope.targetMealOption ? '/' + $scope.targetMealOption._id : ''), { name: $scope.newMealOptionTitle, info: $scope.newMealOptionInfo, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, active: $scope.newMealOptionActive });
+      $http[$scope.targetMealOption ? 'put' : 'post']('/api/mealOptions' + ($scope.targetMealOption ? '/' + $scope.targetMealOption._id : ''), { name: $scope.newMealOptionTitle, label: $scope.newMealOptionLabel, info: $scope.newMealOptionInfo, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, active: $scope.newMealOptionActive, abstract: $scope.newMealOptionAbstract });
       $scope.targetMealOption = '';
       $scope.newMealOptionTitle = '';
+      $scope.newMealOptionLabel = '';
       $scope.newMealOptionInfo = '';
       $scope.newMealOptionChildrenIds = null;
       $scope.newMealOptionActive = true;
+      $scope.newMealOptionAbstract = false;
     };
 
     $scope.deleteMealOption = function(mealOption) {
@@ -35,15 +38,19 @@ angular.module('themealzApp')
       if ($scope.targetMealOption) {
         var item = $scope.getItemById($scope.mealOptions, $scope.targetMealOption._id);
         $scope.newMealOptionTitle = item.name;
+        $scope.newMealOptionLabel = item.label;
         $scope.newMealOptionInfo = item.info;
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.children, '_id');
         $scope.newMealOptionActive = item.active;
+        $scope.newMealOptionAbstract = item.abstract;
       }
       else {
         $scope.newMealOptionTitle = '';
+        $scope.newMealOptionLabel = '';
         $scope.newMealOptionInfo = '';
         $scope.newMealOptionChildrenIds = null;
-        $scope.newMealOptionActive = true;  
+        $scope.newMealOptionActive = true;
+        $scope.newMealOptionAbstract = false;
       }
     };
 
