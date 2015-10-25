@@ -7,13 +7,13 @@ var MealOption = require('./mealOption.model');
 exports.index = function(req, res) {
   MealOption.find(function (err, mealOptions) {
     if(err) { return handleError(res, err); }
-    return res.json(200, mealOptions);
+    return res.status(200).json(mealOptions);
   });
 };
 
 // Get a single mealOption
 exports.show = function(req, res) {
-  MealOption.findById(req.params.id, function (err, mealOption) {
+  MealOption.findOne({ _id: req.params.id, active: true }, function (err, mealOption) {
     if(err) { return handleError(res, err); }
     if(!mealOption) { return res.send(404); }
     return res.json(mealOption);
@@ -38,7 +38,7 @@ exports.showChildren = function(req, res) {
     }
 
     if (abstractsChildrenIds.length > 0) {
-      MealOption.find({ _id: { $in: abstractsChildrenIds } }, function (err, childrenMealOptions) {
+      MealOption.find({ _id: { $in: abstractsChildrenIds }, active: true }, function (err, childrenMealOptions) {
         getNonAbstractChildren(mealOptions.concat(childrenMealOptions), callback);
       });
     }
@@ -47,13 +47,13 @@ exports.showChildren = function(req, res) {
     }
   };
 
-  MealOption.findById(req.params.id, function (err, mealOption) {
+  MealOption.findOne({ _id: req.params.id, active: true }, function (err, mealOption) {
     if(err) { return handleError(res, err); }
     if(!mealOption) { return res.send(404); }
-    MealOption.find({ _id: { $in: mealOption.children } }, function (err, mealOptions) {
+    MealOption.find({ _id: { $in: mealOption.children }, active: true }, function (err, mealOptions) {
       getNonAbstractChildren(mealOptions, function(mealOptions) {
         if(err) { return handleError(res, err); }
-        return res.json(200, mealOptions);
+        return res.status(200).json(mealOptions);
       });
     });
   });
@@ -63,7 +63,7 @@ exports.showChildren = function(req, res) {
 exports.create = function(req, res) {
   MealOption.create(req.body, function(err, mealOption) {
     if(err) { return handleError(res, err); }
-    return res.json(201, mealOption);
+    return res.status(201).json(mealOption);
   });
 };
 
@@ -76,7 +76,7 @@ exports.update = function(req, res) {
     var updated = _.merge(mealOption, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      return res.json(200, mealOption);
+      return res.status(200).json(mealOption);
     });
   });
 };
