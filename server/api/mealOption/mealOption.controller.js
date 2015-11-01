@@ -49,12 +49,14 @@ exports.showChildren = function(req, res) {
       while (i--) {
         var mealOption = mealOptions[i],
           deferred = q.defer();
-        MealOption.find({ _id: { $in: mealOption.children }, active: true }, function(err, childrenMealOptions) {
-          getNonAbstractChildren(childrenMealOptions, function(mealOptions) {
-            mealOption.hasRealChildren = mealOptions && mealOptions.length > 0;
-            deferred.resolve();
+        (function(deferred) {
+          MealOption.find({ _id: { $in: mealOption.children }, active: true }, function(err, childrenMealOptions) {
+            getNonAbstractChildren(childrenMealOptions, function(mealOptions) {
+              mealOption.hasRealChildren = mealOptions && mealOptions.length > 0;
+              deferred.resolve();
+            });
           });
-        });
+        })(deferred);
         promisesArray.push(deferred.promise);
       }
 
