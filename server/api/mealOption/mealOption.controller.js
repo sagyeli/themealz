@@ -1,11 +1,12 @@
 'use strict';
 
 var _ = require('lodash');
+var q = require('q');
 var MealOption = require('./mealOption.model');
 
 // Get list of mealOptions
 exports.index = function(req, res) {
-  MealOption.find(function (err, mealOptions) {
+  MealOption.find(function(err, mealOptions) {
     if(err) { return handleError(res, err); }
     return res.status(200).json(mealOptions);
   });
@@ -13,7 +14,7 @@ exports.index = function(req, res) {
 
 // Get a single mealOption
 exports.show = function(req, res) {
-  MealOption.findOne({ _id: req.params.id, active: true }, function (err, mealOption) {
+  MealOption.findOne({ _id: req.params.id, active: true }, function(err, mealOption) {
     if(err) { return handleError(res, err); }
     if(!mealOption) { return res.send(404); }
     return res.json(mealOption);
@@ -38,19 +39,35 @@ exports.showChildren = function(req, res) {
     }
 
     if (abstractsChildrenIds.length > 0) {
-      MealOption.find({ _id: { $in: abstractsChildrenIds }, active: true }, function (err, childrenMealOptions) {
+      MealOption.find({ _id: { $in: abstractsChildrenIds }, active: true }, function(err, childrenMealOptions) {
         getNonAbstractChildren(mealOptions.concat(childrenMealOptions), callback);
       });
     }
     else {
-      callback(mealOptions);
+      var promisesArray = [],
+        i = mealOptions.length;
+      while (i--) {
+        var mealOption = mealOptions[i],
+          deferred = q.defer();
+        MealOption.find({ _id: { $in: mealOption.children }, active: true }, function(err, childrenMealOptions) {
+          getNonAbstractChildren(childrenMealOptions, function(mealOptions) {
+            mealOption.hasRealChildren = mealOptions && mealOptions.length > 0;
+            deferred.resolve();
+          });
+        });
+        promisesArray.push(deferred.promise);
+      }
+
+      q.when.apply(null, promisesArray).then(function() {
+        callback(mealOptions);
+      });
     }
   };
 
-  MealOption.findOne({ _id: req.params.id, active: true }, function (err, mealOption) {
+  MealOption.findOne({ _id: req.params.id, active: true }, function(err, mealOption) {
     if(err) { return handleError(res, err); }
     if(!mealOption) { return res.send(404); }
-    MealOption.find({ _id: { $in: mealOption.children }, active: true }, function (err, mealOptions) {
+    MealOption.find({ _id: { $in: mealOption.children }, active: true }, function(err, mealOptions) {
       getNonAbstractChildren(mealOptions, function(mealOptions) {
         if(err) { return handleError(res, err); }
         return res.status(200).json(mealOptions);
@@ -70,11 +87,11 @@ exports.create = function(req, res) {
 // Updates an existing mealOption in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
-  MealOption.findById(req.params.id, function (err, mealOption) {
+  MealOption.findById(req.params.id, function(err, mealOption) {
     if (err) { return handleError(res, err); }
     if(!mealOption) { return res.send(404); }
     var updated = _.merge(mealOption, req.body);
-    updated.save(function (err) {
+    updated.save(function(err) {
       if (err) { return handleError(res, err); }
       return res.status(200).json(mealOption);
     });
@@ -83,7 +100,7 @@ exports.update = function(req, res) {
 
 // Deletes a mealOption from the DB.
 exports.destroy = function(req, res) {
-  MealOption.findById(req.params.id, function (err, mealOption) {
+  MealOption.findById(req.params.id, function(err, mealOption) {
     if(err) { return handleError(res, err); }
     if(!mealOption) { return res.send(404); }
     mealOption.remove(function(err) {
