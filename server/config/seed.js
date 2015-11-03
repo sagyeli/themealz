@@ -29,7 +29,10 @@ MealOption.find({}).remove(function() {
     iconUrl: '',
     info: '',
     children: []
-  });
+  }, function() {
+      console.log('finished populating meal options');
+    }
+  );
 });
 
 User.find({}).remove(function() {
@@ -45,6 +48,29 @@ User.find({}).remove(function() {
     email: 'admin@admin.com',
     password: 'admin'
   }, function() {
+      console.log('finished populating users');
+    }
+  );
+});
+
+Restaurant.find({}).remove(function() {
+  Restaurant.create({
+    name: 'Moe\'s Tavern'
+  }, {
+    name: 'המסעדה הגדולה'
+  }, {
+    name: 'Café 80\'s'
+  }, {
+    name: 'Ten Forward'
+  }, {
+    name: 'Monk\'s Café'
+  }, {
+    name: 'אימפריית השמש'
+  }, {
+    name: 'Central Perk'
+  }, {
+    name: 'Cheers'
+  } function() {
       console.log('finished populating users');
     }
   );
