@@ -7,6 +7,7 @@
 
 var MealOption = require('../api/mealOption/mealOption.model');
 var User = require('../api/user/user.model');
+var Restaurant = require('../api/restaurant/restaurant.model');
 
 MealOption.find({}).remove(function() {
   MealOption.create({
@@ -70,8 +71,8 @@ Restaurant.find({}).remove(function() {
     name: 'Central Perk'
   }, {
     name: 'Cheers'
-  } function() {
-      console.log('finished populating users');
+  }, function() {
+      console.log('finished populating restaurants');
     }
   );
 });

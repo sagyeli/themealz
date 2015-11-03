@@ -8,5 +8,5 @@ module.exports = {
     uri: 'mongodb://localhost/themealz-dev'
   },
 
-  seedDB: false
+  seedDB: true
 };
