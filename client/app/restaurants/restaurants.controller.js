@@ -4,7 +4,6 @@ angular.module('themealzApp')
   .controller('RestaurantsCtrl', function ($scope, $http, socket) {
     $scope.restaurants = [];
     $scope.newRestaurantActive = true;
-    $scope.newRestaurantAbstract = false;
 
     $http.get('/api/restaurants').success(function(restaurants) {
       $scope.restaurants = restaurants;
@@ -12,17 +11,17 @@ angular.module('themealzApp')
     });
 
     $scope.addOrEditRestaurant = function() {
-      if($scope.newRestaurantTitle === '' && $scope.newRestaurantLabel === '') {
+      if($scope.newRestaurantTitle === '') {
         return;
       }
-      $http[$scope.targetRestaurant ? 'put' : 'post']('/api/restaurants' + ($scope.targetRestaurant ? '/' + $scope.targetRestaurant._id : ''), { name: $scope.newRestaurantTitle, label: $scope.newRestaurantLabel, info: $scope.newRestaurantInfo, children: $scope.newRestaurantChildrenIds ? $scope.pluck($scope.newRestaurantChildrenIds, '_id') : null, active: $scope.newRestaurantActive, abstract: $scope.newRestaurantAbstract });
+      $http[$scope.targetRestaurant ? 'put' : 'post']('/api/restaurants' + ($scope.targetRestaurant ? '/' + $scope.targetRestaurant._id : ''), { name: $scope.newRestaurantTitle, info: $scope.newRestaurantInfo, address: $scope.newRestaurantAddress, latitude: $scope.newRestaurantLatitude, longitude: $scope.newRestaurantLongitude, active: $scope.newRestaurantActive });
       $scope.targetRestaurant = '';
       $scope.newRestaurantTitle = '';
-      $scope.newRestaurantLabel = '';
       $scope.newRestaurantInfo = '';
-      $scope.newRestaurantChildrenIds = null;
+      $scope.newRestaurantAddress = '';
+      $scope.newRestaurantLatitude = null;
+      $scope.newRestaurantLongitude = null;
       $scope.newRestaurantActive = true;
-      $scope.newRestaurantAbstract = false;
     };
 
     $scope.deleteRestaurant = function(restaurant) {
@@ -38,19 +37,19 @@ angular.module('themealzApp')
       if ($scope.targetRestaurant) {
         var item = $scope.getItemById($scope.restaurants, $scope.targetRestaurant._id);
         $scope.newRestaurantTitle = item.name;
-        $scope.newRestaurantLabel = item.label;
         $scope.newRestaurantInfo = item.info;
-        $scope.newRestaurantChildrenIds = $scope.getItemsByProperty($scope.restaurants, item.children, '_id');
+        $scope.newRestaurantAddress = item.address;
+        $scope.newRestaurantLatitude = item.latitude;
+        $scope.newRestaurantLongitude = item.longitude;
         $scope.newRestaurantActive = item.active;
-        $scope.newRestaurantAbstract = item.abstract;
       }
       else {
         $scope.newRestaurantTitle = '';
-        $scope.newRestaurantLabel = '';
         $scope.newRestaurantInfo = '';
-        $scope.newRestaurantChildrenIds = null;
+        $scope.newRestaurantAddress = '';
+        $scope.newRestaurantLatitude = null;
+        $scope.newRestaurantLongitude = null;
         $scope.newRestaurantActive = true;
-        $scope.newRestaurantAbstract = false;
       }
     };
 

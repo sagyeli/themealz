@@ -25,6 +25,15 @@
       <textarea class="form-control" rows="3" placeholder="Add some information here" ng-model="newRestaurantInfo"></textarea>
     </p>
     <p class="form-group">
+      <input type="text" class="form-control typeahead" placeholder="Add address" ng-model="newRestaurantAddress" typeahead-address>
+    </p>
+    <p class="form-group">
+      <input type="text" class="form-control typeahead-lat" placeholder="Latitude" ng-model="newRestaurantLatitude" style="width: 7.5em;">
+    </p>
+    <p class="form-group">
+      <input type="text" class="form-control typeahead-lng" placeholder="Longitude" ng-model="newRestaurantLongitude" style="width: 7.5em;">
+    </p>
+    <p class="form-group">
       <div class="checkbox">
         <label>
           <input type="checkbox" ng-model="newRestaurantActive"> Is Active
