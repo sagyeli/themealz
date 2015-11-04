@@ -5,6 +5,9 @@ angular.module('themealzApp')
     $scope.menu = [{
       'title': 'Home',
       'link': '/'
+    }, {
+      'title': 'Restaurants',
+      'link': 'restaurants/'
     }];
 
     $scope.isCollapsed = true;
