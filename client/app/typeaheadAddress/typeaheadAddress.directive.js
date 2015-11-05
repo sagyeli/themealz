@@ -19,8 +19,8 @@ angular.module('themealzApp')
 				display: 'display_name',
 				source: addresses
 			}).bind('typeahead:selected', function(obj, selected, name) {
-				$('.typeahead-lat').val(selected.lat);
-				$('.typeahead-lng').val(selected.lon);
+				$('.typeahead-lat').val(selected.lat).trigger('input');
+				$('.typeahead-lng').val(selected.lon).trigger('input');
 			}).off('blur');
 		  }
 		};

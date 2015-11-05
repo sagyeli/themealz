@@ -14,7 +14,7 @@ angular.module('themealzApp')
       if($scope.newRestaurantTitle === '') {
         return;
       }
-      $http[$scope.targetRestaurant ? 'put' : 'post']('/api/restaurants' + ($scope.targetRestaurant ? '/' + $scope.targetRestaurant._id : ''), { name: $scope.newRestaurantTitle, info: $scope.newRestaurantInfo, address: $scope.newRestaurantAddress, latitude: $scope.newRestaurantLatitude, longitude: $scope.newRestaurantLongitude, active: $scope.newRestaurantActive });
+      $http[$scope.targetRestaurant ? 'put' : 'post']('/api/restaurants' + ($scope.targetRestaurant ? '/' + $scope.targetRestaurant._id : ''), { name: $scope.newRestaurantTitle, info: $scope.newRestaurantInfo, address: $scope.newRestaurantAddress, latitude: parseInt($scope.newRestaurantLatitude), longitude: parseInt($scope.newRestaurantLongitude), active: $scope.newRestaurantActive });
       $scope.targetRestaurant = '';
       $scope.newRestaurantTitle = '';
       $scope.newRestaurantInfo = '';
