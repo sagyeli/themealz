@@ -1,0 +1,43 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Meal Options Groups:</h1>
+      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="mealOptionsGroup in mealOptionsGroups">
+        <li><a href="#" ng-click="onItemClicked(mealOptionsGroup)">{{ mealOptionsGroup.name }} ({{ mealOptionsGroup.active ? 'active' : 'inactive' }})<button type="button" class="close" ng-click="deleteMealOptionsGroup(mealOptionsGroup)">&times;</button></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <form class="mealOptionsGroup-form">
+    <label>Add or edit some more meal options groups:</label>
+    <p class="form-group">
+      <label for="target_selector">Select meal options group to edit:</label>
+      <select id="target_selector" ng-model="targetMealOptionsGroup" ng-options="mealOptionsGroup.name for mealOptionsGroup in mealOptionsGroups track by mealOptionsGroup._id" ng-model="selected" ng-change="onTargetMealOptionsGroupChanged()">
+        <option value="">Create a new option...</option>
+      </select>
+    </p>
+    <p class="form-group">
+      <input type="text" class="form-control" placeholder="Add a title here" ng-model="newMealOptionsGroupTitle">
+    </p>
+    <p class="form-group">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-model="newMealOptionsGroupActive"> Is Active
+        </label>
+      </div>
+    </p>
+    <p class="form-group">
+      <label for="children_selector">Select children meal options:</label>
+      <select id="children_selector" ng-model="newMealOptionChildrenIds" ng-options="mealOption.name for mealOption in mealOptions track by mealOption._id" multiple></select>
+    </p>
+    <button type="submit" class="btn btn-primary" ng-click="addOrEditMealOptionsGroup()">{{ targetMealOptionsGroup ? 'Edit Meal Option' : 'Add New' }}</button>
+  </form>
+</div>
+
+<footer class="footer">
+  <div class="container">
+      <p>The Mealz v0.1</p>
+  </div>
+</footer>

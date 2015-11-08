@@ -9,6 +9,7 @@ var RestaurantSchema = new Schema({
   address: String,
   latitude: Number,
   longitude: Number,
+  mealOptions: [{type: mongoose.Schema.Types.ObjectId, ref: 'MealOption'}],
   admin: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   active: {type: Boolean, default: true }
 });
