@@ -34,6 +34,14 @@
       <input type="text" class="form-control typeahead-lng" placeholder="Longitude" ng-model="newRestaurantLongitude" style="width: 7.5em;">
     </p>
     <p class="form-group">
+      <label for="children_selector">Select children meal options:</label>
+      <select id="children_selector" ng-model="newMealOptionChildrenIds" ng-options="mealOption.name for mealOption in mealOptions track by mealOption._id" multiple></select>
+    </p>
+    <p class="form-group">
+      <label for="children_selector">Or, select children meal options groups:</label>
+      <select id="children_selector" ng-model="newMealOptionsGroups" ng-options="mealOptionsGroup.name for mealOptionsGroup in mealOptionsGroups track by mealOptionsGroup._id" ng-click="onMealOptionsGroupsChanged()" multiple></select>
+    </p>
+    <p class="form-group">
       <div class="checkbox">
         <label>
           <input type="checkbox" ng-model="newRestaurantActive"> Is Active
