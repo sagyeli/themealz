@@ -23,7 +23,7 @@ exports.show = function(req, res) {
 
 // Get the children a single mealOption
 exports.showChildren = function(req, res) {
-  var getNonAbstractChildren = function(mealOptions, callback) {
+  function getNonAbstractChildren(mealOptions, callback) {
     if (!mealOptions) {
       callback(mealOptions);
       return;
