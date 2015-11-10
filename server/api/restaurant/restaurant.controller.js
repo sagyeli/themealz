@@ -34,7 +34,7 @@ exports.update = function(req, res) {
   Restaurant.findById(req.params.id, function (err, restaurant) {
     if (err) { return handleError(res, err); }
     if(!restaurant) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(restaurant, req.body);
+    var updated = _.merge(restaurant, req.body, function(a, b) { return b; });
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       return res.status(200).json(restaurant);

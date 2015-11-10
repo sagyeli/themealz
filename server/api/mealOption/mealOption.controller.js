@@ -92,7 +92,7 @@ exports.update = function(req, res) {
   MealOption.findById(req.params.id, function(err, mealOption) {
     if (err) { return handleError(res, err); }
     if(!mealOption) { return res.send(404); }
-    var updated = _.merge(mealOption, req.body);
+    var updated = _.merge(mealOption, req.body, function(a, b) { return b; });
     updated.save(function(err) {
       if (err) { return handleError(res, err); }
       return res.status(200).json(mealOption);
