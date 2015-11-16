@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
 
 var MealOptionsGroupSchema = new Schema({
   name: String,
-  children: [{type: mongoose.Schema.Types.ObjectId, ref: 'MealOption'}],
+  children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOption' }],
   active: Boolean
 });
 

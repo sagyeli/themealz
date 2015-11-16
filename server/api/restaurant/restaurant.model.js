@@ -9,10 +9,10 @@ var RestaurantSchema = new Schema({
   address: String,
   latitude: Number,
   longitude: Number,
-  mealOptions: [{type: mongoose.Schema.Types.ObjectId, ref: 'MealOption'}],
-  mealOptionsGroups: [{type: mongoose.Schema.Types.ObjectId, ref: 'MealOptionsGroup'}],
-  admin: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-  active: {type: Boolean, default: true }
+  mealOptions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOption' }],
+  mealOptionsGroups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOptionsGroup' }],
+  admin: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  active: { type: Boolean, default: true }
 });
 
 module.exports = mongoose.model('Restaurant', RestaurantSchema);
