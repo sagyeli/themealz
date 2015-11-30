@@ -11,6 +11,9 @@ angular.module('themealzApp')
     }, {
       'title': 'Meal Options Groups',
       'link': 'mealOptionsGroups/'
+    }, {
+      'title': 'Meals',
+      'link': 'meals/'
     }];
 
     $scope.isCollapsed = true;

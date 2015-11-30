@@ -3,6 +3,7 @@
 angular.module('themealzApp')
   .controller('MealOptionsGroupsCtrl', function ($scope, $http, socket) {
     $scope.mealOptionsGroups = [];
+    $scope.mealOptions = [];
     $scope.newMealOptionsGroupActive = true;
 
     $http.get('/api/mealOptionsGroups').success(function(mealOptionsGroups) {
@@ -26,7 +27,7 @@ angular.module('themealzApp')
       $scope.newMealOptionsGroupActive = true;
     };
 
-    $scope.deleteMealOptionsGroup = function(mealOptionsGroup) {
+    $scope.deleteMeal = function(mealOptionsGroup) {
       $http.delete('/api/mealOptionsGroups/' + mealOptionsGroup._id);
     };
 
@@ -51,6 +52,7 @@ angular.module('themealzApp')
 
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('mealOptionsGroup');
+      socket.unsyncUpdates('mealOptions');
     });
 
     $scope.getItemById = function(arr, id) {

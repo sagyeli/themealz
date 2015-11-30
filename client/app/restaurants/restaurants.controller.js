@@ -17,7 +17,7 @@ angular.module('themealzApp')
 
     $http.get('/api/mealOptions').success(function(mealOptions) {
       $scope.mealOptions = mealOptions;
-      socket.syncUpdates('mealOptions', $scope.mealOptions);
+      socket.syncUpdates('mealOption', $scope.mealOptions);
     });
 
     $scope.addOrEditRestaurant = function() {
@@ -80,6 +80,8 @@ angular.module('themealzApp')
 
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('restaurant');
+      socket.unsyncUpdates('mealOptionsGroup');
+      socket.unsyncUpdates('mealOption');
     });
 
     $scope.getItemById = function(arr, id) {
