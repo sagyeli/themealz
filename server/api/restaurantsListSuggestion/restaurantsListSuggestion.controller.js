@@ -4,6 +4,7 @@ var _ = require('lodash');
 var RestaurantsListSuggestion = require('./restaurantsListSuggestion.model');
 var MealOption = require('./../mealOption/mealOption.model');
 var Restaurant = require('./../restaurant/restaurant.model');
+var Meal = require('./../meal/meal.model');
 
 // Get list of restaurantsListSuggestions
 exports.index = function(req, res) {
@@ -26,20 +27,24 @@ exports.show = function(req, res) {
 exports.create = function(req, res) {
   if (req.body.mealOptions) {
     MealOption.find({ _id: { $in: req.body.mealOptions } }, function (err, mealOptions) {
-      Restaurant.find(function (err, restaurants) {
-        var list = [],
-          i = restaurants.length;
-        while(i--) {
-          list.unshift({ restaurant: { name: restaurants[i].name }, price: Math.random() * 100, timeInMinutes: Math.random() * 60, grade: Math.random() * 5 });
-        }
+      Meal.find(function (err, meals) {
+        Restaurant.find(function (err, restaurants) {
+          var list = [],
+            i = meals.length;
+          while(i--) {
+            if (_.difference(_.map(meals[i].mealOptions, function(item) { return item.toString(); }), req.body.mealOptions).length === 0) {
+              list.unshift({ restaurant: { name: _.findWhere(restaurants, { '_id': meals[i].restaurant }).name }, price: meals[i].price, timeInMinutes: 0, grade: 5 });
+            }
+          }
 
-        RestaurantsListSuggestion.create({
-          mealOptions: mealOptions,
-          list: list
-        },
-        function(err, restaurantsListSuggestion) {
-          if(err) { return handleError(res, err); }
-          return res.status(201).json(restaurantsListSuggestion.list);
+          RestaurantsListSuggestion.create({
+            mealOptions: mealOptions,
+            list: list
+          },
+          function(err, restaurantsListSuggestion) {
+            if(err) { return handleError(res, err); }
+            return res.status(201).json(restaurantsListSuggestion.list);
+          });
         });
       });
     });
