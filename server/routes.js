@@ -9,6 +9,7 @@ var errors = require('./components/errors');
 module.exports = function(app) {
 
   // Insert routes below
+  app.use('/api/orderMessages', require('./api/orderMessage'));
   app.use('/api/meals', require('./api/meal'));
   app.use('/api/restaurantsListSuggestions', require('./api/restaurantsListSuggestion'));
   app.use('/api/mealOptionsGroups', require('./api/mealOptionsGroup'));

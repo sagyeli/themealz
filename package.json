@@ -24,7 +24,8 @@
     "serve-favicon": "~2.0.1",
     "socket.io": "^1.0.6",
     "socket.io-client": "^1.0.6",
-    "socketio-jwt": "^3.0.0"
+    "socketio-jwt": "^3.0.0",
+    "twilio": "^2.8.0"
   },
   "devDependencies": {
     "blueimp-file-upload-node": "^2.1.0",

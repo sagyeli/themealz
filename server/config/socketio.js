@@ -18,6 +18,7 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  require('../api/orderMessage/orderMessage.socket').register(socket);
   require('../api/meal/meal.socket').register(socket);
   require('../api/restaurantsListSuggestion/restaurantsListSuggestion.socket').register(socket);
   require('../api/mealOptionsGroup/mealOptionsGroup.socket').register(socket);
