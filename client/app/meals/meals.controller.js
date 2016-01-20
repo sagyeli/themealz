@@ -27,7 +27,7 @@ angular.module('themealzApp')
     });
 
     $scope.addOrEditMeal = function() {
-      $http[$scope.targetMeal ? 'put' : 'post']('/api/meals' + ($scope.targetMeal ? '/' + $scope.targetMeal._id : ''), { mealOptions: $scope.newMealOptionsIds ? $scope.pluck($scope.newMealOptionsIds, '_id') : null, restaurant: $scope.newRestaurantId ? $scope.newRestaurantId._id : null, price: parseFloat($scope.newMealPrice), active: $scope.newMealActive });
+      $http[$scope.targetMeal ? 'put' : 'post']('/api/meals' + ($scope.targetMeal ? '/' + $scope.targetMeal._id : ''), { mealOptions: $scope.newMealOptionsIds ? $scope.map($scope.newMealOptionsIds, function(item) { return { mealOption: item, flavors: null }; }) : null, restaurant: $scope.newRestaurantId ? $scope.newRestaurantId._id : null, price: parseFloat($scope.newMealPrice), active: $scope.newMealActive });
       $scope.newRestaurantId = null;
       $scope.newMealOptionsIds = [];
       $scope.newMealPrice = null;
@@ -122,6 +122,20 @@ angular.module('themealzApp')
         i = arr.length;
       while (i--) {
         results.push(arr[i] ? arr[i][key] : null)
+      }
+
+      return results;
+    };
+
+    $scope.map = function(arr, func) {
+      if (!Array.isArray(arr)) {
+        return null;
+      }
+
+      var results = [],
+        i = arr.length;
+      while (i--) {
+        results.push(arr[i] ? func(arr[i]) : null)
       }
 
       return results;

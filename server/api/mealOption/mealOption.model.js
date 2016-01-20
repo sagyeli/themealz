@@ -9,6 +9,7 @@ var MealOptionSchema = new Schema({
   iconUrl: String,
   info: String,
   children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOption' }],
+  relevantFlavors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOptionFlavor' }],
   hasRealChildren: { type: Boolean, default: false },
   active: { type: Boolean, default: true },
   abstract: { type: Boolean, default: false }

@@ -60,7 +60,7 @@
         <tbody>
           <tr ng-repeat="meal in meals" ng-click="onTargetMealChanged(meal)" data-toggle="modal" data-target="#myModal" ng-class="{ active: meal.selected }">
             <td>{{ getItemById(restaurants, meal.restaurant).name }}</td>
-            <td>{{ pluck(getItemsByProperty(mealOptions, meal.mealOptions, '_id'), 'name').join(', ') }}</td>
+            <td>{{ pluck(getItemsByProperty(mealOptions, pluck(meal.mealOptions, 'mealOption'), '_id'), 'name').join(', ') }}</td>
             <td>{{ meal.price }}</td>
             <td>{{ meal.active }}</td>
             <td><button type="button" class="close" ng-click="deleteMeal(meal)">&times;</button></td>
