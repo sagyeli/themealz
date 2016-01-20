@@ -8,10 +8,8 @@ angular.module('themealzApp')
      * @param  {String} modalClass - (optional) class(es) to be applied to the modal
      * @return {Object}            - the instance $modal.open() returns
      */
-    function openModal(scope, modalClass) {
+    function openModal(scope = {}, modalClass = 'modal-default') {
       var modalScope = $rootScope.$new();
-      scope = scope || {};
-      modalClass = modalClass || 'modal-default';
 
       angular.extend(modalScope, scope);
 
@@ -33,13 +31,11 @@ angular.module('themealzApp')
          * @param  {Function} del - callback, ran when delete is confirmed
          * @return {Function}     - the function to open the modal (ex. myModalFn)
          */
-        delete: function(del) {
-          del = del || angular.noop;
-
+        delete(del = angular.noop) {
           /**
            * Open a delete confirmation modal
            * @param  {String} name   - name or info to show on modal
-           * @param  {All}           - any additional args are passed staight to del callback
+           * @param  {All}           - any additional args are passed straight to del callback
            */
           return function() {
             var args = Array.prototype.slice.call(arguments),

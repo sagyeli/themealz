@@ -1,8 +1,8 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 $fa-font-path: "/bower_components/font-awesome/fonts";
 
-@import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
-@import 'font-awesome/scss/font-awesome';
+@import '../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
+@import '../bower_components/font-awesome/scss/font-awesome';
 
 /**
  * App-wide Styles
@@ -24,7 +24,8 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 @import 'mealOptionsGroups/mealOptionsGroups.scss';
 @import 'meals/meals.scss';
 @import 'restaurants/restaurants.scss';
-@import 'modal/modal.scss';
+@import '../components/footer/footer.scss';
+@import '../components/modal/modal.scss';
 // endinjector
 
 .tt-menu {
