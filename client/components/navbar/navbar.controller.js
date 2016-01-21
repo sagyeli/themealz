@@ -6,6 +6,9 @@ angular.module('themealzApp')
       'title': 'Home',
       'link': '/'
     }, {
+      'title': 'Meal Option Flavors',
+      'link': 'mealOptionFlavors/'
+    }, {
       'title': 'Restaurants',
       'link': 'restaurants/'
     }, {

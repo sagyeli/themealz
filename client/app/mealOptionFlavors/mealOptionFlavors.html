@@ -1,0 +1,39 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Meal Option Flavors:</h1>
+      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="mealOptionFlavor in mealOptionFlavors">
+        <li><a href="#" tooltip="{{ mealOptionFlavor.info }}" ng-click="onItemClicked(mealOptionFlavor)">{{ mealOptionFlavor.name }}<button type="button" class="close" ng-click="deleteMealOptionFlavor(mealOptionFlavor)">&times;</button></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <form class="mealOptionFlavor-form">
+    <label>Add or edit some more meal options:</label>
+    <p class="form-group">
+      <label for="target_selector">Select meal option to edit:</label>
+      <select id="target_selector" ng-model="targetMealOptionFlavor" ng-options="mealOptionFlavor.name for mealOptionFlavor in mealOptionFlavors track by mealOptionFlavor._id" ng-model="selected" ng-change="onTargetMealOptionFlavorChanged()">
+        <option value="">Create a new option...</option>
+      </select>
+    </p>
+    <p class="form-group">
+      <input type="text" class="form-control" placeholder="Add a title here" ng-model="newMealOptionFlavorTitle">
+    </p>
+    <p class="form-group">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-model="newMealOptionFlavorActive"> Is Active
+        </label>
+      </div>
+    </p>
+    <button type="submit" class="btn btn-primary" ng-click="addOrEditMealOptionFlavor()">{{ targetMealOptionFlavor ? 'Edit Meal Option' : 'Add New' }}</button>
+  </form>
+</div>
+
+<footer class="footer">
+  <div class="container">
+      <p>The Mealz v0.1</p>
+  </div>
+</footer>
