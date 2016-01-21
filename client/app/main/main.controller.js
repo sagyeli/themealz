@@ -3,6 +3,7 @@
 angular.module('themealzApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
     $scope.mealOptions = [];
+    $scope.mealOptionFlavors = [];
     $scope.newMealOptionActive = true;
     $scope.newMealOptionAbstract = false;
 
@@ -11,16 +12,22 @@ angular.module('themealzApp')
       socket.syncUpdates('mealOption', $scope.mealOptions);
     });
 
+    $http.get('/api/mealOptionFlavors').success(function(mealOptionFlavors) {
+      $scope.mealOptionFlavors = mealOptionFlavors;
+      socket.syncUpdates('mealOptionFlavor', $scope.mealOptionFlavors);
+    });
+
     $scope.addOrEditMealOption = function() {
       if($scope.newMealOptionTitle === '' && $scope.newMealOptionLabel === '') {
         return;
       }
-      $http[$scope.targetMealOption ? 'put' : 'post']('/api/mealOptions' + ($scope.targetMealOption ? '/' + $scope.targetMealOption._id : ''), { name: $scope.newMealOptionTitle, label: $scope.newMealOptionLabel, info: $scope.newMealOptionInfo, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, active: $scope.newMealOptionActive, abstract: $scope.newMealOptionAbstract });
+      $http[$scope.targetMealOption ? 'put' : 'post']('/api/mealOptions' + ($scope.targetMealOption ? '/' + $scope.targetMealOption._id : ''), { name: $scope.newMealOptionTitle, label: $scope.newMealOptionLabel, info: $scope.newMealOptionInfo, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, relevantFlavors: $scope.newMealOptionFlavorsIds ? $scope.pluck($scope.newMealOptionFlavorsIds, '_id') : null, active: $scope.newMealOptionActive, abstract: $scope.newMealOptionAbstract });
       $scope.targetMealOption = '';
       $scope.newMealOptionTitle = '';
       $scope.newMealOptionLabel = '';
       $scope.newMealOptionInfo = '';
       $scope.newMealOptionChildrenIds = null;
+      $scope.newMealOptionFlavorsIds = null;
       $scope.newMealOptionActive = true;
       $scope.newMealOptionAbstract = false;
     };
@@ -41,6 +48,7 @@ angular.module('themealzApp')
         $scope.newMealOptionLabel = item.label;
         $scope.newMealOptionInfo = item.info;
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.children, '_id');
+        $scope.newMealOptionFlavorsIds = $scope.getItemsByProperty($scope.mealOptionFlavors, item.relevantFlavors, '_id');
         $scope.newMealOptionActive = item.active;
         $scope.newMealOptionAbstract = item.abstract;
       }
@@ -49,6 +57,7 @@ angular.module('themealzApp')
         $scope.newMealOptionLabel = '';
         $scope.newMealOptionInfo = '';
         $scope.newMealOptionChildrenIds = null;
+        $scope.newMealOptionFlavorsIds = null;
         $scope.newMealOptionActive = true;
         $scope.newMealOptionAbstract = false;
       }

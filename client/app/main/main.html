@@ -49,6 +49,10 @@
       <label for="children_selector">Select children meal options:</label>
       <select id="children_selector" ng-model="newMealOptionChildrenIds" ng-options="mealOption.name for mealOption in mealOptions track by mealOption._id" multiple></select>
     </p>
+    <p class="form-group">
+      <label for="flavor_selector">Select meal option flavors:</label>
+      <select id="flavor_selector" ng-model="newMealOptionFlavorsIds" ng-options="mealOptionFlavor.name for mealOptionFlavor in mealOptionFlavors track by mealOptionFlavor._id" multiple></select>
+    </p>
     <button type="submit" class="btn btn-primary" ng-click="addOrEditMealOption()">{{ targetMealOption ? 'Edit Meal Option' : 'Add New' }}</button>
   </form>
 </div>
