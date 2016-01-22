@@ -28,7 +28,18 @@
               <p class="form-group">
                 <input type="text" class="form-control" placeholder="Add the price here" ng-model="newMealPrice">
               </p>
-              <p class="form-group">
+              <p class="form-group" ng-repeat-start="newMealOptionsId in newMealOptionsIds">
+                <h3>{{ newMealOptionsId.name }}</h3>
+                <table class="table">
+                  <tbody>
+                    <tr ng-repeat="mealOptionFlavor in newMealOptionsId.relevantFlavors">
+                      <td>{{ (getItemById(mealOptionFlavors, mealOptionFlavor) || {}).name }}</td>
+                      <td><input type="text" ng-model="flavorPrice" ng-change="handleMealOptionFlavors(newMealOptionsId._id, mealOptionFlavor, flavorPrice)"/></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </p>
+              <p class="form-group" ng-repeat-end>
                 <div class="checkbox">
                   <label>
                     <input type="checkbox" ng-model="newMealActive"> Is Active
@@ -53,6 +64,7 @@
             <th>Restaurant Name</th>
             <th>Meal Options</th>
             <th>Price</th>
+            <th>Flavors</th>
             <th>Is Active?</th>
             <th></th>
           </tr>
@@ -62,6 +74,7 @@
             <td>{{ getItemById(restaurants, meal.restaurant).name }}</td>
             <td>{{ pluck(getItemsByProperty(mealOptions, pluck(meal.mealOptions, 'mealOption'), '_id'), 'name').join(', ') }}</td>
             <td>{{ meal.price }}</td>
+            <td>{{ getFlavorsSummary(meal) }}</td>
             <td>{{ meal.active }}</td>
             <td><button type="button" class="close" ng-click="deleteMeal(meal)">&times;</button></td>
           </tr>
