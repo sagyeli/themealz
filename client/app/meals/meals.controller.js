@@ -9,9 +9,10 @@ angular.module('themealzApp')
 
     $scope.newRestaurantId = null;
     $scope.newMealOptionsIds = [];
-    $scope.newMealOptionFlavorsByMealOptionIds = {};
     $scope.newMealPrice = null;
     $scope.newMealActive = true;
+
+    $scope.flavorsPrices = {};
 
     $http.get('/api/meals').success(function(meals) {
       $scope.meals = meals;
@@ -34,12 +35,13 @@ angular.module('themealzApp')
     });
 
     $scope.addOrEditMeal = function() {
-      $http[$scope.targetMeal ? 'put' : 'post']('/api/meals' + ($scope.targetMeal ? '/' + $scope.targetMeal._id : ''), { mealOptions: $scope.newMealOptionsIds ? $scope.map($scope.newMealOptionsIds, function(item) { return { mealOption: item, mealOptionFlavors: $scope.newMealOptionFlavorsByMealOptionIds[item._id] }; }) : null, restaurant: $scope.newRestaurantId ? $scope.newRestaurantId._id : null, price: parseFloat($scope.newMealPrice), active: $scope.newMealActive });
+      $http[$scope.targetMeal ? 'put' : 'post']('/api/meals' + ($scope.targetMeal ? '/' + $scope.targetMeal._id : ''), { mealOptions: $scope.newMealOptionsIds ? $scope.map($scope.newMealOptionsIds, function(item) { return { mealOption: { _id: item._id }, mealOptionFlavors: $scope.map(item.relevantFlavors, function(flavorId) { return { mealOptionFlavor: flavorId, price: parseFloat($scope.flavorsPrices[item._id + '_' + flavorId]) } }) }; }) : null, restaurant: $scope.newRestaurantId ? $scope.newRestaurantId._id : null, price: parseFloat($scope.newMealPrice), active: $scope.newMealActive });
       $scope.newRestaurantId = null;
       $scope.newMealOptionsIds = [];
-      $scope.newMealOptionFlavorsByMealOptionIds = {};
       $scope.newMealPrice = null;
       $scope.newMealActive = true;
+
+      $scope.flavorsPrices = {};
     };
 
     $scope.deleteMeal = function(meal) {
@@ -61,8 +63,7 @@ angular.module('themealzApp')
       if ($scope.targetMeal) {
         var item = $scope.getItemById($scope.meals, $scope.targetMeal._id);
         $scope.newRestaurantId = $scope.getItemById($scope.restaurants, item.restaurant);
-        $scope.newMealOptionsIds = $scope.getItemsByProperty($scope.mealOptions, item.mealOptions, '_id');
-        $scope.newMealOptionFlavorsByMealOptionIds = {};
+        $scope.newMealOptionsIds = $scope.getItemsByProperty($scope.mealOptions, $scope.pluck(item.mealOptions, 'mealOption'), '_id');
         $scope.newMealPrice = item.price;
         $scope.newMealActive = item.active;
 
@@ -70,41 +71,25 @@ angular.module('themealzApp')
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.children, '_id');
         $scope.newMealOptionsGroupActive = item.active;
 
+        $scope.flavorsPrices = {};
+        var i = $scope.targetMeal.mealOptions.length;
+        while (i--) {
+          var mealOption = $scope.targetMeal.mealOptions[i],
+            j = mealOption.mealOptionFlavors.length;
+            while(j--) {
+              $scope.flavorsPrices[mealOption.mealOption + '_' + mealOption.mealOptionFlavors[j].mealOptionFlavor] = mealOption.mealOptionFlavors[j].price;
+            }
+        }
+
         meal.selected = true;
       }
       else {
         $scope.newRestaurantId = null;
         $scope.newMealOptionsIds = [];
-        $scope.newMealOptionFlavorsByMealOptionIds = {};
         $scope.newMealPrice = null;
         $scope.newMealActive = true;
-      }
-    };
 
-    $scope.handleMealOptionFlavors = function(mealOptionId, mealOptionFlavorId, priceText) {
-      var price = parseInt(priceText);
-
-      if (!$scope.newMealOptionFlavorsByMealOptionIds[mealOptionId]) {
-        $scope.newMealOptionFlavorsByMealOptionIds[mealOptionId] = [];
-      }
-
-      var foundInArray = false,
-        i = $scope.newMealOptionFlavorsByMealOptionIds[mealOptionId].length;
-      while(i--) {
-        if ($scope.newMealOptionFlavorsByMealOptionIds[mealOptionId][i].mealOptionFlavor === mealOptionFlavorId) {
-          if (price) {
-            $scope.newMealOptionFlavorsByMealOptionIds[mealOptionId][i].price = price;
-          }
-          else {
-            $scope.newMealOptionFlavorsByMealOptionIds[mealOptionId].splice(i, 1);
-          }
-
-          foundInArray = true;
-        }
-      }
-
-      if (!foundInArray && price) {
-        $scope.newMealOptionFlavorsByMealOptionIds[mealOptionId].push({ mealOptionFlavor: mealOptionFlavorId, price: price });
+        $scope.flavorsPrices = {};
       }
     };
 

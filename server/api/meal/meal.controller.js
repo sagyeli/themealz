@@ -34,7 +34,11 @@ exports.update = function(req, res) {
   Meal.findById(req.params.id, function (err, meal) {
     if (err) { return handleError(res, err); }
     if(!meal) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(meal, req.body);
+    // var updated = _.merge(meal, req.body);
+    var updated = meal;
+    for (var key in req.body) {
+      updated[key] = req.body[key];
+    }
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       return res.status(200).json(meal);

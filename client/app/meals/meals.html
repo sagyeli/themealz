@@ -28,13 +28,13 @@
               <p class="form-group">
                 <input type="text" class="form-control" placeholder="Add the price here" ng-model="newMealPrice">
               </p>
-              <p class="form-group" ng-repeat-start="newMealOptionsId in newMealOptionsIds">
-                <h3>{{ newMealOptionsId.name }}</h3>
+              <p class="form-group" ng-repeat-start="newMealOption in newMealOptionsIds">
+                <h3>{{ newMealOption.name }}</h3>
                 <table class="table">
                   <tbody>
-                    <tr ng-repeat="mealOptionFlavor in newMealOptionsId.relevantFlavors">
+                    <tr ng-repeat="mealOptionFlavor in newMealOption.relevantFlavors">
                       <td>{{ (getItemById(mealOptionFlavors, mealOptionFlavor) || {}).name }}</td>
-                      <td><input type="text" ng-model="flavorPrice" ng-change="handleMealOptionFlavors(newMealOptionsId._id, mealOptionFlavor, flavorPrice)"/></td>
+                      <td><input type="text" class="form-control" ng-model="flavorsPrices[newMealOption._id + '_' + mealOptionFlavor]" placeholder="Add the price here"/></td>
                     </tr>
                   </tbody>
                 </table>
@@ -74,9 +74,20 @@
             <td>{{ getItemById(restaurants, meal.restaurant).name }}</td>
             <td>{{ pluck(getItemsByProperty(mealOptions, pluck(meal.mealOptions, 'mealOption'), '_id'), 'name').join(', ') }}</td>
             <td>{{ meal.price }}</td>
-            <td>{{ getFlavorsSummary(meal) }}</td>
+            <td>
+              <ul>
+                <li ng-repeat="mealOption in meal.mealOptions">
+                  {{ (getItemById(mealOptions, mealOption.mealOption) || {}).name }}
+                  <ul ng-repeat="mealOptionFlavor in mealOption.mealOptionFlavors">
+                    <li>
+                      {{ (getItemById(mealOptionFlavors, mealOptionFlavor.mealOptionFlavor) || {}).name }}: {{ mealOptionFlavor.price }}
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </td>
             <td>{{ meal.active }}</td>
-            <td><button type="button" class="close" ng-click="deleteMeal(meal)">&times;</button></td>
+            <td><button type="button" class="close" ng-click="deleteMeal(meal); $event.stopPropagation();">&times;</button></td>
           </tr>
         </tbody>
       </table>
