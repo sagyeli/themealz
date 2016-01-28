@@ -10,7 +10,8 @@ angular.module('themealzApp', [
   'ngRoute',
   'btford.socket-io',
   'ui.bootstrap',
-  'validation.match'
+  'validation.match',
+  'ui.multiselect'
 ])
   .config(function($routeProvider, $locationProvider) {
     $routeProvider

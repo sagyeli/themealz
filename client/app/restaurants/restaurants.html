@@ -14,9 +14,18 @@
     <label>Add or edit some more restaurants:</label>
     <p class="form-group">
       <label for="target_selector">Select restaurant to edit:</label>
-      <select id="target_selector" ng-model="targetRestaurant" ng-options="restaurant.name for restaurant in restaurants track by restaurant._id" ng-model="selected" ng-change="onTargetRestaurantChanged()">
-        <option value="">Create a new option...</option>
-      </select>
+      <multiselect
+        ng-model="targetRestaurant"
+        options="restaurant.name for restaurant in restaurants"
+        change="onTargetRestaurantChanged()"
+        data-multiple="false"
+        data-compare-by="_id"
+        scroll-after-rows="5"
+        filter-after-rows="5"
+        max-width="100"
+        tabindex="-1">
+      </multiselect>
+      <a href="" ng-click="targetRestaurant = null;">Clear Selection</a>
     </p>
     <p class="form-group">
       <input type="text" class="form-control" placeholder="Add a title here" ng-model="newRestaurantTitle">
@@ -35,11 +44,29 @@
     </p>
     <p class="form-group">
       <label for="children_selector">Select children meal options:</label>
-      <select id="children_selector" ng-model="newMealOptionChildrenIds" ng-options="mealOption.name for mealOption in mealOptions track by mealOption._id" multiple></select>
+      <multiselect
+        ng-model="newMealOptionChildrenIds"
+        options="mealOption.name for mealOption in mealOptions"
+        data-multiple="true"
+        data-compare-by="_id"
+        scroll-after-rows="5"
+        filter-after-rows="5"
+        max-width="100"
+        tabindex="-1">
+      </multiselect>
     </p>
     <p class="form-group">
       <label for="children_selector">Or, select children meal options groups:</label>
-      <select id="children_selector" ng-model="newMealOptionsGroups" ng-options="mealOptionsGroup.name for mealOptionsGroup in mealOptionsGroups track by mealOptionsGroup._id" ng-click="onMealOptionsGroupsChanged()" multiple></select>
+      <multiselect
+        ng-model="newMealOptionsGroups"
+        options="mealOptionsGroup.name for mealOptionsGroup in mealOptionsGroups"
+        data-multiple="true"
+        data-compare-by="_id"
+        scroll-after-rows="5"
+        filter-after-rows="5"
+        max-width="100"
+        tabindex="-1">
+      </multiselect>
     </p>
     <p class="form-group">
       <div class="checkbox">

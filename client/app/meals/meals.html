@@ -19,11 +19,29 @@
               <label>Add or edit some more meals:</label>
               <p class="form-group">
                 <label for="restaurant_selector">Select restaurant:</label>
-                <select id="restaurant_selector" ng-model="newRestaurantId" ng-options="restaurant.name for restaurant in restaurants track by restaurant._id"></select>
+                <multiselect
+                  ng-model="newRestaurantId"
+                  options="restaurant.name for restaurant in restaurants"
+                  data-multiple="false"
+                  data-compare-by="_id"
+                  scroll-after-rows="5"
+                  filter-after-rows="5"
+                  max-width="100"
+                  tabindex="-1">
+                </multiselect>
               </p>
               <p class="form-group">
                 <label for="meals_options_selector">Select meal options:</label>
-                <select id="meals_options_selector" ng-model="newMealOptionsIds" ng-options="mealOption.name for mealOption in mealOptions track by mealOption._id" multiple></select>
+                <multiselect
+                  ng-model="newMealOptionsIds"
+                  options="mealOption.name for mealOption in mealOptions"
+                  data-multiple="true"
+                  data-compare-by="_id"
+                  scroll-after-rows="5"
+                  filter-after-rows="5"
+                  max-width="100"
+                  tabindex="-1">
+                </multiselect>
               </p>
               <p class="form-group">
                 <input type="text" class="form-control" placeholder="Add the price here" ng-model="newMealPrice">
