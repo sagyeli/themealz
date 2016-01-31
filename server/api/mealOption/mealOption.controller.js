@@ -78,11 +78,42 @@ exports.showChildren = function(req, res) {
   });
 };
 
+function updateChildrenWithFlavors(children, flavors, callback) {
+  var promisesArray = [];
+
+  MealOption.find({ _id: { $in: children }, active: true }, function(err, childrenMealOptions) {
+    var i = childrenMealOptions.length;
+    while(i--) {
+      var mealOption = childrenMealOptions[i],
+        deferred = q.defer();
+      mealOption.relevantFlavors = _.merge(mealOption.relevantFlavors || [], flavors, function(a, b) { return b; });
+      mealOption.save(function(err) {
+        if (err) { return handleError(res, err); }
+        if (!mealOption.children || mealOption.children.legnth === 0) {
+          deferred.resolve();
+        }
+        else {
+          updateChildrenWithFlavors(mealOption.children, flavors, function() {
+            deferred.resolve();
+          });
+        }
+      });
+      promisesArray.push(deferred.promise);
+    }
+  });
+
+  q.when.apply(null, promisesArray).then(function() {
+    callback();
+  });
+};
+
 // Creates a new mealOption in the DB.
 exports.create = function(req, res) {
   MealOption.create(req.body, function(err, mealOption) {
     if(err) { return handleError(res, err); }
-    return res.status(201).json(mealOption);
+      updateChildrenWithFlavors(mealOption.children, mealOption.relevantFlavors, function() {
+        return res.status(201).json(mealOption);
+      });
   });
 };
 
@@ -95,7 +126,9 @@ exports.update = function(req, res) {
     var updated = _.merge(mealOption, req.body, function(a, b) { return b; });
     updated.save(function(err) {
       if (err) { return handleError(res, err); }
-      return res.status(200).json(mealOption);
+        updateChildrenWithFlavors(mealOption.children, mealOption.relevantFlavors, function() {
+          return res.status(200).json(mealOption);
+        });
     });
   });
 };
