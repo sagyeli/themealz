@@ -27,7 +27,7 @@ angular.module('themealzApp')
       $scope.newMealOptionsGroupActive = true;
     };
 
-    $scope.deleteMeal = function(mealOptionsGroup) {
+    $scope.deleteMealOptionsGroup = function(mealOptionsGroup) {
       $http.delete('/api/mealOptionsGroups/' + mealOptionsGroup._id);
     };
 
