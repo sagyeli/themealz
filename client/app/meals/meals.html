@@ -34,7 +34,7 @@
                 <label for="meals_options_selector">Select meal options:</label>
                 <multiselect
                   ng-model="newMealOptionsIds"
-                  options="mealOption.name for mealOption in mealOptions"
+                  options="mealOption.name for mealOption in mealOptions | inArray:(newRestaurantId && newRestaurantId.mealOptions ? newRestaurantId.mealOptions : pluck(mealOptions, '_id')):'_id'"
                   data-multiple="true"
                   data-compare-by="_id"
                   scroll-after-rows="5"
