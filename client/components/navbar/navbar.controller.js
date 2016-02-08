@@ -3,20 +3,20 @@
 angular.module('themealzApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
     $scope.menu = [{
-      'title': 'Home',
+      'title': 'Meal Option',
       'link': '/'
     }, {
       'title': 'Meal Option Flavors',
-      'link': 'mealOptionFlavors/'
+      'link': '/mealOptionFlavors'
     }, {
       'title': 'Restaurants',
-      'link': 'restaurants/'
+      'link': '/restaurants'
     }, {
       'title': 'Meal Options Groups',
-      'link': 'mealOptionsGroups/'
+      'link': '/mealOptionsGroups'
     }, {
       'title': 'Meals',
-      'link': 'meals/'
+      'link': '/meals'
     }];
 
     $scope.isCollapsed = true;

@@ -40,12 +40,18 @@ angular.module('themealzApp')
       $http.delete('/api/restaurants/' + restaurant._id);
     };
 
-    $scope.onItemClicked = function(restaurant) {
+    $scope.onTargetRestaurantChanged = function(restaurant) {
       $scope.targetRestaurant = restaurant;
-      $scope.onTargetRestaurantChanged();
-    };
 
-    $scope.onTargetRestaurantChanged = function() {
+      var i = $scope.restaurants.length;
+      while(i--) {
+        if ($scope.restaurants[i] === restaurant) {
+          continue;
+        }
+
+        delete $scope.restaurants[i].selected;
+      }
+
       if ($scope.targetRestaurant) {
         var item = $scope.getItemById($scope.restaurants, $scope.targetRestaurant._id);
         $scope.newRestaurantTitle = item.name;
@@ -56,6 +62,8 @@ angular.module('themealzApp')
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.mealOptions, '_id');
         $scope.newMealOptionsGroups = $scope.getItemsByProperty($scope.mealOptionsGroups, item.mealOptionsGroups, '_id');
         $scope.newRestaurantActive = item.active;
+
+        restaurant.selected = true;
       }
       else {
         $scope.newRestaurantTitle = '';
@@ -70,6 +78,10 @@ angular.module('themealzApp')
     };
 
     $scope.onMealOptionsGroupsChanged = function() {
+      if (!$scope.newMealOptionsGroups) {
+        return;
+      }
+
       var i = $scope.newMealOptionsGroups.length,
         newMealOptionChildrenIds = [];
       while (i--) {

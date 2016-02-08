@@ -4,29 +4,27 @@
   <div class="row">
     <div class="col-lg-12">
       <h1 class="page-header">Meal Option Flavors:</h1>
-      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="mealOptionFlavor in mealOptionFlavors">
-        <li><a href="#" tooltip="{{ mealOptionFlavor.info }}" ng-click="onItemClicked(mealOptionFlavor)">{{ mealOptionFlavor.name }}<button type="button" class="close" ng-click="deleteMealOptionFlavor(mealOptionFlavor)">&times;</button></a></li>
-      </ul>
+      <table class="table">
+        <thead class="thead-default">
+          <tr>
+            <th>Meal Option Flavour Name</th>
+            <th>Is Active?</th>
+            <th><a href="" ng-click="onTargetMealOptionFlavorChanged(); targetMealOptionFlavor = null;">Clear Selection</a></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="mealOptionFlavor in mealOptionFlavors" ng-click="onTargetMealOptionFlavorChanged(mealOptionFlavor)" ng-class="{ active: mealOptionFlavor.selected }">
+            <td>{{ mealOptionFlavor.name }}</td>
+            <td>{{ mealOptionFlavor.active }}</td>
+            <td><button type="button" class="close" ng-click="deleteMealOptionFlavor(mealOptionFlavor); $event.stopPropagation();">&times;</button></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
   <form class="mealOptionFlavor-form">
     <label>Add or edit some more meal options:</label>
-    <p class="form-group">
-      <label for="target_selector">Select meal option to edit:</label>
-      <multiselect
-        ng-model="targetMealOptionFlavor"
-        options="mealOptionFlavor.name for mealOptionFlavor in mealOptionFlavors"
-        change="onTargetMealOptionFlavorChanged()"
-        data-multiple="false"
-        data-compare-by="_id"
-        scroll-after-rows="5"
-        filter-after-rows="5"
-        max-width="100"
-        tabindex="-1">
-      </multiselect>
-      <a href="" ng-click="targetMealOptionFlavor = null;">Clear Selection</a>
-    </p>
     <p class="form-group">
       <input type="text" class="form-control" placeholder="Add a title here" ng-model="newMealOptionFlavorTitle">
     </p>

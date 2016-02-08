@@ -4,29 +4,34 @@
   <div class="row">
     <div class="col-lg-12">
       <h1 class="page-header">Restaurants:</h1>
-      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="restaurant in restaurants">
-        <li><a href="#" tooltip="{{ restaurant.info }}" ng-click="onItemClicked(restaurant)">{{ restaurant.name }} ({{ restaurant.active ? 'active' : 'inactive' }})<button type="button" class="close" ng-click="deleteRestaurant(restaurant)">&times;</button></a></li>
-      </ul>
+      <table class="table">
+        <thead class="thead-default">
+          <tr>
+            <th>Restaurant Name</th>
+            <th>Info</th>
+            <th>Address</th>
+            <th>GPS Location</th>
+            <th>Is Active?</th>
+            <th><a href="" ng-click="onTargetRestaurantChanged(); targetRestaurant = null">Clear Selection</a></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="restaurant in restaurants" ng-click="onTargetRestaurantChanged(restaurant)" ng-class="{ active: restaurant.selected }">
+            <td>{{ restaurant.name }}</td>
+            <td>{{ restaurant.info }}</td>
+            <td>{{ restaurant.address }}</td>
+            <td>
+              {{ restaurant.latitude }}{{ restaurant.latitude && restaurant.longitude ? ', ' : '' }}{{ restaurant.longitude }}
+            </td>
+            <td>{{ restaurant.active }}</td>
+            <td><button type="button" class="close" ng-click="deleteRestaurant(restaurant); $event.stopPropagation();">&times;</button></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
   <form class="restaurant-form">
-    <label>Add or edit some more restaurants:</label>
-    <p class="form-group">
-      <label for="target_selector">Select restaurant to edit:</label>
-      <multiselect
-        ng-model="targetRestaurant"
-        options="restaurant.name for restaurant in restaurants"
-        change="onTargetRestaurantChanged()"
-        data-multiple="false"
-        data-compare-by="_id"
-        scroll-after-rows="5"
-        filter-after-rows="5"
-        max-width="100"
-        tabindex="-1">
-      </multiselect>
-      <a href="" ng-click="targetRestaurant = null;">Clear Selection</a>
-    </p>
     <p class="form-group">
       <input type="text" class="form-control" placeholder="Add a title here" ng-model="newRestaurantTitle">
     </p>
@@ -60,6 +65,7 @@
       <multiselect
         ng-model="newMealOptionsGroups"
         options="mealOptionsGroup.name for mealOptionsGroup in mealOptionsGroups"
+        change="onMealOptionsGroupsChanged()"
         data-multiple="true"
         data-compare-by="_id"
         scroll-after-rows="5"

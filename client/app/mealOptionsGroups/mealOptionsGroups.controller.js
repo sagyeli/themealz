@@ -31,17 +31,25 @@ angular.module('themealzApp')
       $http.delete('/api/mealOptionsGroups/' + mealOptionsGroup._id);
     };
 
-    $scope.onItemClicked = function(mealOptionsGroup) {
+    $scope.onTargetMealOptionsGroupChanged = function(mealOptionsGroup) {
       $scope.targetMealOptionsGroup = mealOptionsGroup;
-      $scope.onTargetMealOptionsGroupChanged();
-    };
 
-    $scope.onTargetMealOptionsGroupChanged = function() {
+      var i = $scope.mealOptionsGroups.length;
+      while(i--) {
+        if ($scope.mealOptionsGroups[i] === mealOptionsGroup) {
+          continue;
+        }
+
+        delete $scope.mealOptionsGroups[i].selected;
+      }
+
       if ($scope.targetMealOptionsGroup) {
         var item = $scope.getItemById($scope.mealOptionsGroups, $scope.targetMealOptionsGroup._id);
         $scope.newMealOptionsGroupTitle = item.name;
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.children, '_id');
         $scope.newMealOptionsGroupActive = item.active;
+
+        mealOptionsGroup.selected = true;
       }
       else {
         $scope.newMealOptionsGroupTitle = '';

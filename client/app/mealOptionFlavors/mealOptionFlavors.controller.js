@@ -24,16 +24,24 @@ angular.module('themealzApp')
       $http.delete('/api/mealOptionFlavors/' + mealOptionFlavor._id);
     };
 
-    $scope.onItemClicked = function(mealOptionFlavor) {
+    $scope.onTargetMealOptionFlavorChanged = function(mealOptionFlavor) {
       $scope.targetMealOptionFlavor = mealOptionFlavor;
-      $scope.onTargetMealOptionFlavorChanged();
-    };
 
-    $scope.onTargetMealOptionFlavorChanged = function() {
+      var i = $scope.mealOptionFlavors.length;
+      while(i--) {
+        if ($scope.mealOptionFlavors[i] === mealOptionFlavor) {
+          continue;
+        }
+
+        delete $scope.mealOptionFlavors[i].selected;
+      }
+
       if ($scope.targetMealOptionFlavor) {
         var item = $scope.getItemById($scope.mealOptionFlavors, $scope.targetMealOptionFlavor._id);
         $scope.newMealOptionFlavorTitle = item.name;
         $scope.newMealOptionFlavorActive = item.active;
+
+        mealOptionFlavor.selected = true;
       }
       else {
         $scope.newMealOptionFlavorTitle = '';

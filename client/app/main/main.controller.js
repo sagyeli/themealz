@@ -36,12 +36,18 @@ angular.module('themealzApp')
       $http.delete('/api/mealOptions/' + mealOption._id);
     };
 
-    $scope.onItemClicked = function(mealOption) {
+    $scope.onTargetMealOptionChanged = function(mealOption) {
       $scope.targetMealOption = mealOption;
-      $scope.onTargetMealOptionChanged();
-    };
 
-    $scope.onTargetMealOptionChanged = function() {
+      var i = $scope.mealOptions.length;
+      while(i--) {
+        if ($scope.mealOptions[i] === mealOption) {
+          continue;
+        }
+
+        delete $scope.mealOptions[i].selected;
+      }
+
       if ($scope.targetMealOption) {
         var item = $scope.getItemById($scope.mealOptions, $scope.targetMealOption._id);
         $scope.newMealOptionTitle = item.name;
@@ -51,6 +57,8 @@ angular.module('themealzApp')
         $scope.newMealOptionFlavorsIds = $scope.getItemsByProperty($scope.mealOptionFlavors, item.relevantFlavors, '_id');
         $scope.newMealOptionActive = item.active;
         $scope.newMealOptionAbstract = item.abstract;
+
+        mealOption.selected = true;
       }
       else {
         $scope.newMealOptionTitle = '';
