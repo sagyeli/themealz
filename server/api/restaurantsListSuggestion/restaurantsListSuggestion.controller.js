@@ -32,7 +32,8 @@ exports.create = function(req, res) {
           var list = [],
             i = meals.length;
           while(i--) {
-            if (_.difference(_.map(meals[i].mealOptions, function(item) { return item.toString(); }), req.body.mealOptions).length === 0) {
+            var mealMealOptions = _.map(meals[i].mealOptions, function(item) { return item.mealOption.toString(); });
+            if (meals[i].active && mealMealOptions.length === req.body.mealOptions.length && _.difference(mealMealOptions, req.body.mealOptions).length === 0) {
               list.unshift({ restaurant: { name: _.findWhere(restaurants, { '_id': meals[i].restaurant }).name }, price: meals[i].price, timeInMinutes: 0, grade: 5 });
             }
           }
