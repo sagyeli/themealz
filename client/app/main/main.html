@@ -62,6 +62,19 @@
       </div>
     </p>
     <p class="form-group">
+      <label for="children_selector">Select parents meal options:</label>
+      <multiselect
+        ng-model="newMealOptionParentsIds"
+        options="mealOption.name for mealOption in mealOptions"
+        data-multiple="true"
+        data-compare-by="_id"
+        scroll-after-rows="5"
+        filter-after-rows="5"
+        max-width="100"
+        tabindex="-1">
+      </multiselect>
+    </p>
+    <p class="form-group">
       <label for="children_selector">Select children meal options:</label>
       <multiselect
         ng-model="newMealOptionChildrenIds"

@@ -107,12 +107,57 @@ function updateChildrenWithFlavors(children, flavors, callback) {
   });
 };
 
+function updateParents(mealOption, callback) {
+  var promisesArray = [];
+
+  MealOption.find({ _id: { $in: mealOption.parents }, active: true }, function(err, parentsMealOptions) {
+    var i = parentsMealOptions.length;
+    while(i--) {
+      if (!parentsMealOptions[i].children || parentsMealOptions[i].children && parentsMealOptions[i].children.indexOf(mealOption._id) < 0) {
+        var deferred = q.defer();
+        promisesArray.push(deferred.promise);
+
+        if(!parentsMealOptions[i].children) {
+          parentsMealOptions[i].children = [];
+        }
+        parentsMealOptions[i].children.push(mealOption._id);
+        parentsMealOptions[i].save(function(err) {
+          if (err) { return handleError(res, err); }
+          deferred.resolve();
+        });
+      }
+    }
+  });
+
+  MealOption.find({ _id: { $nin: mealOption.parents }, active: true }, function(err, parentsMealOptions) {
+    var i = parentsMealOptions.length;
+    while(i--) {
+      if (parentsMealOptions[i].children && parentsMealOptions[i].children.indexOf(mealOption._id) >= 0) {
+        var deferred = q.defer();
+        promisesArray.push(deferred.promise);
+
+        parentsMealOptions[i].children.splice(parentsMealOptions[i].children.indexOf(mealOption._id), 1);
+        parentsMealOptions[i].save(function(err) {
+          if (err) { return handleError(res, err); }
+          deferred.resolve();
+        });
+      }
+    }
+  });
+
+  q.when.apply(null, promisesArray).then(function() {
+    callback();
+  });
+}
+
 // Creates a new mealOption in the DB.
 exports.create = function(req, res) {
   MealOption.create(req.body, function(err, mealOption) {
     if(err) { return handleError(res, err); }
       updateChildrenWithFlavors(mealOption.children, mealOption.relevantFlavors, function() {
-        return res.status(201).json(mealOption);
+        updateParents(mealOption, function() {
+          return res.status(201).json(mealOption);
+        });
       });
   });
 };
@@ -127,7 +172,9 @@ exports.update = function(req, res) {
     updated.save(function(err) {
       if (err) { return handleError(res, err); }
         updateChildrenWithFlavors(mealOption.children, mealOption.relevantFlavors, function() {
-          return res.status(200).json(mealOption);
+          updateParents(mealOption, function() {
+            return res.status(200).json(mealOption);
+          });
         });
     });
   });
