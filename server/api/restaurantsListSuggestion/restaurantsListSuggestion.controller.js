@@ -29,6 +29,21 @@ exports.create = function(req, res) {
     MealOption.find({ _id: { $in: req.body.mealOptions } }, function (err, mealOptions) {
       Meal.find(function (err, meals) {
         Restaurant.find(function (err, restaurants) {
+          restaurants = _.filter(restaurants, function(restaurant) {
+            var startTimeForCurrentDay = restaurant.startTime ? restaurant.startTime - (new Date(restaurant.startTime)).setHours(0,0,0,0) + (new Date()).setHours(0,0,0,0) : null,
+              endTimeForCurrentDay = restaurant.endTime ? restaurant.endTime - (new Date(restaurant.endTime)).setHours(0,0,0,0) + (new Date()).setHours(0,0,0,0) : null,
+              currentTime = new Date().getTime();
+
+            if (startTimeForCurrentDay && currentTime < startTimeForCurrentDay) {
+              return false;
+            }
+            if (endTimeForCurrentDay && currentTime > endTimeForCurrentDay) {
+              return false;
+            }
+
+            return true;
+          });
+
           var list = [],
             i = meals.length;
           while(i--) {
