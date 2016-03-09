@@ -6,8 +6,16 @@ angular.module('themealzApp')
     $scope.newRestaurantActive = true;
 
     $http.get('/api/restaurants').success(function(restaurants) {
-      $scope.restaurants = restaurants;
-      socket.syncUpdates('restaurant', $scope.restaurants);
+      function translateDateAttributes(restaurant) {
+        restaurant.startTime = restaurant.startTime ? new Date(restaurant.startTime) : null;
+        restaurant.endTime = restaurant.endTime ? new Date(restaurant.endTime) : null;
+        return restaurant;
+      }
+
+      $scope.restaurants = $scope.map(restaurants, translateDateAttributes);
+      socket.syncUpdates('restaurant', $scope.restaurants, function(event, item, array) {
+        $scope.restaurants = $scope.map(array, translateDateAttributes);
+      });
     });
 
     $http.get('/api/mealOptionsGroups').success(function(mealOptionsGroups) {
@@ -24,11 +32,21 @@ angular.module('themealzApp')
       if($scope.newRestaurantTitle === '') {
         return;
       }
-      $http[$scope.targetRestaurant ? 'put' : 'post']('/api/restaurants' + ($scope.targetRestaurant ? '/' + $scope.targetRestaurant._id : ''), { name: $scope.newRestaurantTitle, info: $scope.newRestaurantInfo, address: $scope.newRestaurantAddress, latitude: parseInt($scope.newRestaurantLatitude), longitude: parseInt($scope.newRestaurantLongitude), mealOptions: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, mealOptionsGroups: $scope.newMealOptionsGroups ? $scope.pluck($scope.newMealOptionsGroups, '_id') : null, active: $scope.newRestaurantActive });
+
+      if ($scope.newRestaurantStartTime) {
+        $scope.newRestaurantStartTime.setSeconds(0);
+      }
+      if ($scope.newRestaurantEndTime) {
+        $scope.newRestaurantEndTime.setSeconds(0);
+      }
+
+      $http[$scope.targetRestaurant ? 'put' : 'post']('/api/restaurants' + ($scope.targetRestaurant ? '/' + $scope.targetRestaurant._id : ''), { name: $scope.newRestaurantTitle, info: $scope.newRestaurantInfo, address: $scope.newRestaurantAddress, startTime: $scope.newRestaurantStartTime, endTime: $scope.newRestaurantEndTime, latitude: parseInt($scope.newRestaurantLatitude), longitude: parseInt($scope.newRestaurantLongitude), mealOptions: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, mealOptionsGroups: $scope.newMealOptionsGroups ? $scope.pluck($scope.newMealOptionsGroups, '_id') : null, active: $scope.newRestaurantActive });
       $scope.targetRestaurant = '';
       $scope.newRestaurantTitle = '';
       $scope.newRestaurantInfo = '';
       $scope.newRestaurantAddress = '';
+      $scope.newRestaurantStartTime = null;
+      $scope.newRestaurantEndTime = null;
       $scope.newRestaurantLatitude = null;
       $scope.newRestaurantLongitude = null;
       $scope.newMealOptionChildrenIds = null;
@@ -57,6 +75,8 @@ angular.module('themealzApp')
         $scope.newRestaurantTitle = item.name;
         $scope.newRestaurantInfo = item.info;
         $scope.newRestaurantAddress = item.address;
+        $scope.newRestaurantStartTime = item.startTime;
+        $scope.newRestaurantEndTime = item.endTime;
         $scope.newRestaurantLatitude = item.latitude;
         $scope.newRestaurantLongitude = item.longitude;
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.mealOptions, '_id');
@@ -69,6 +89,8 @@ angular.module('themealzApp')
         $scope.newRestaurantTitle = '';
         $scope.newRestaurantInfo = '';
         $scope.newRestaurantAddress = '';
+        $scope.newRestaurantStartTime = null;
+        $scope.newRestaurantEndTime = null;
         $scope.newRestaurantLatitude = null;
         $scope.newRestaurantLongitude = null;
         $scope.newMealOptionChildrenIds = null;
@@ -141,6 +163,20 @@ angular.module('themealzApp')
         i = arr.length;
       while (i--) {
         results.push(arr[i] ? arr[i][key] : null)
+      }
+
+      return results;
+    };
+
+    $scope.map = function(arr, func) {
+      if (!Array.isArray(arr)) {
+        return null;
+      }
+
+      var results = [],
+        i = arr.length;
+      while (i--) {
+        results.unshift(arr[i] ? func(arr[i]) : null)
       }
 
       return results;

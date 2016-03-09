@@ -11,7 +11,8 @@ angular.module('themealzApp', [
   'btford.socket-io',
   'ui.bootstrap',
   'validation.match',
-  'ui.multiselect'
+  'ui.multiselect',
+  'ui.bootstrap.datetimepicker'
 ])
   .config(function($routeProvider, $locationProvider) {
     $routeProvider
