@@ -18,6 +18,9 @@
             <form class="meal-form">
               <label>Add or edit some more meals:</label>
               <p class="form-group">
+                <input type="text" class="form-control" placeholder="Add label here" ng-model="newMealLabel">
+              </p>
+              <p class="form-group">
                 <label for="restaurant_selector">Select restaurant:</label>
                 <multiselect
                   ng-model="newRestaurantId"
@@ -79,6 +82,7 @@
       <table class="table">
         <thead class="thead-default">
           <tr>
+            <th>Label</th>
             <th>Restaurant Name</th>
             <th>Meal Options</th>
             <th>Price</th>
@@ -89,6 +93,7 @@
         </thead>
         <tbody>
           <tr ng-repeat="meal in meals" ng-click="onTargetMealChanged(meal)" data-toggle="modal" data-target="#myModal" ng-class="{ active: meal.selected }">
+            <td>{{ meal.label }}</td>
             <td>{{ getItemById(restaurants, meal.restaurant).name }}</td>
             <td>{{ pluck(getItemsByProperty(mealOptions, pluck(meal.mealOptions, 'mealOption'), '_id'), 'name').join(', ') }}</td>
             <td>{{ meal.price }}</td>

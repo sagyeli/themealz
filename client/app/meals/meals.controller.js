@@ -7,6 +7,7 @@ angular.module('themealzApp')
     $scope.mealOptions = [];
     $scope.mealOptionFlavors = [];
 
+    $scope.newMealLabel = null;
     $scope.newRestaurantId = null;
     $scope.newMealOptionsIds = [];
     $scope.newMealPrice = null;
@@ -35,7 +36,8 @@ angular.module('themealzApp')
     });
 
     $scope.addOrEditMeal = function() {
-      $http[$scope.targetMeal ? 'put' : 'post']('/api/meals' + ($scope.targetMeal ? '/' + $scope.targetMeal._id : ''), { mealOptions: $scope.newMealOptionsIds ? $scope.map($scope.newMealOptionsIds, function(item) { return { mealOption: { _id: item._id }, mealOptionFlavors: $scope.map(item.relevantFlavors, function(flavorId) { return { mealOptionFlavor: flavorId, price: parseFloat($scope.flavorsPrices[item._id + '_' + flavorId]) } }) }; }) : null, restaurant: $scope.newRestaurantId ? $scope.newRestaurantId._id : null, price: parseFloat($scope.newMealPrice), active: $scope.newMealActive });
+      $http[$scope.targetMeal ? 'put' : 'post']('/api/meals' + ($scope.targetMeal ? '/' + $scope.targetMeal._id : ''), { label: $scope.newMealLabel, mealOptions: $scope.newMealOptionsIds ? $scope.map($scope.newMealOptionsIds, function(item) { return { mealOption: { _id: item._id }, mealOptionFlavors: $scope.map(item.relevantFlavors, function(flavorId) { return { mealOptionFlavor: flavorId, price: parseFloat($scope.flavorsPrices[item._id + '_' + flavorId]) } }) }; }) : null, restaurant: $scope.newRestaurantId ? $scope.newRestaurantId._id : null, price: parseFloat($scope.newMealPrice), active: $scope.newMealActive });
+      $scope.newMealLabel = null;
       $scope.newRestaurantId = null;
       $scope.newMealOptionsIds = [];
       $scope.newMealPrice = null;
@@ -62,6 +64,7 @@ angular.module('themealzApp')
 
       if ($scope.targetMeal) {
         var item = $scope.getItemById($scope.meals, $scope.targetMeal._id);
+        $scope.newMealLabel = item.label;
         $scope.newRestaurantId = $scope.getItemById($scope.restaurants, item.restaurant);
         $scope.newMealOptionsIds = $scope.getItemsByProperty($scope.mealOptions, $scope.pluck(item.mealOptions, 'mealOption'), '_id');
         $scope.newMealPrice = item.price;
@@ -84,6 +87,7 @@ angular.module('themealzApp')
         meal.selected = true;
       }
       else {
+        $scope.newMealLabel = null;
         $scope.newRestaurantId = null;
         $scope.newMealOptionsIds = [];
         $scope.newMealPrice = null;
