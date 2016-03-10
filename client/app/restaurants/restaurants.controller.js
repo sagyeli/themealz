@@ -40,13 +40,14 @@ angular.module('themealzApp')
         $scope.newRestaurantEndTime.setSeconds(0);
       }
 
-      $http[$scope.targetRestaurant ? 'put' : 'post']('/api/restaurants' + ($scope.targetRestaurant ? '/' + $scope.targetRestaurant._id : ''), { name: $scope.newRestaurantTitle, info: $scope.newRestaurantInfo, address: $scope.newRestaurantAddress, startTime: $scope.newRestaurantStartTime, endTime: $scope.newRestaurantEndTime, latitude: parseInt($scope.newRestaurantLatitude), longitude: parseInt($scope.newRestaurantLongitude), mealOptions: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, mealOptionsGroups: $scope.newMealOptionsGroups ? $scope.pluck($scope.newMealOptionsGroups, '_id') : null, active: $scope.newRestaurantActive });
+      $http[$scope.targetRestaurant ? 'put' : 'post']('/api/restaurants' + ($scope.targetRestaurant ? '/' + $scope.targetRestaurant._id : ''), { name: $scope.newRestaurantTitle, info: $scope.newRestaurantInfo, address: $scope.newRestaurantAddress, startTime: $scope.newRestaurantStartTime, endTime: $scope.newRestaurantEndTime, deliveryTime: $scope.newRestaurantDeliveryTime, latitude: parseInt($scope.newRestaurantLatitude), longitude: parseInt($scope.newRestaurantLongitude), mealOptions: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, mealOptionsGroups: $scope.newMealOptionsGroups ? $scope.pluck($scope.newMealOptionsGroups, '_id') : null, active: $scope.newRestaurantActive });
       $scope.targetRestaurant = '';
       $scope.newRestaurantTitle = '';
       $scope.newRestaurantInfo = '';
       $scope.newRestaurantAddress = '';
       $scope.newRestaurantStartTime = null;
       $scope.newRestaurantEndTime = null;
+      $scope.newRestaurantDeliveryTime = null;
       $scope.newRestaurantLatitude = null;
       $scope.newRestaurantLongitude = null;
       $scope.newMealOptionChildrenIds = null;
@@ -77,6 +78,7 @@ angular.module('themealzApp')
         $scope.newRestaurantAddress = item.address;
         $scope.newRestaurantStartTime = item.startTime;
         $scope.newRestaurantEndTime = item.endTime;
+        $scope.newRestaurantDeliveryTime = item.deliveryTime;
         $scope.newRestaurantLatitude = item.latitude;
         $scope.newRestaurantLongitude = item.longitude;
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.mealOptions, '_id');
@@ -91,6 +93,7 @@ angular.module('themealzApp')
         $scope.newRestaurantAddress = '';
         $scope.newRestaurantStartTime = null;
         $scope.newRestaurantEndTime = null;
+        $scope.newRestaurantDeliveryTime = null;
         $scope.newRestaurantLatitude = null;
         $scope.newRestaurantLongitude = null;
         $scope.newMealOptionChildrenIds = null;

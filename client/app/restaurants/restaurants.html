@@ -12,6 +12,7 @@
             <th>Address</th>
             <th>Opening Start Time</th>
             <th>Opening End Time</th>
+            <th>Delivery Time (in minutes)</th>
             <th>GPS Location</th>
             <th>Is Active?</th>
             <th><a href="" ng-click="onTargetRestaurantChanged(); targetRestaurant = null">Clear Selection</a></th>
@@ -24,6 +25,7 @@
             <td>{{ restaurant.address }}</td>
             <td>{{ restaurant.startTime.toLocaleTimeString() }}</td>
             <td>{{ restaurant.endTime.toLocaleTimeString() }}</td>
+            <td>{{ restaurant.deliveryTime }}</td>
             <td>
               {{ restaurant.latitude }}{{ restaurant.latitude && restaurant.longitude ? ', ' : '' }}{{ restaurant.longitude }}
             </td>
@@ -43,10 +45,10 @@
       <textarea class="form-control" rows="3" placeholder="Add some information here" ng-model="newRestaurantInfo"></textarea>
     </p>
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <input type="text" class="form-control typeahead" placeholder="Add address" ng-model="newRestaurantAddress" typeahead-address>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <p class="input-group">
           <input type="text" class="form-control" placeholder="Enter opening time start" datetime-picker="HH:mm" ng-model="newRestaurantStartTime" is-open="startTimepickerIsOpened" enable-date="false" close-on-selection="true" />
           <span class="input-group-addon btn" ng-click="startTimepickerIsOpened = !startTimepickerIsOpened">
@@ -54,13 +56,16 @@
           </span>
         </p>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <p class="input-group">
           <input type="text" class="form-control" placeholder="Enter opening time end" datetime-picker="HH:mm" ng-model="newRestaurantEndTime" is-open="endTimepickerIsOpened" enable-date="false" close-on-selection="true" />
           <span class="input-group-addon btn" ng-click="endTimepickerIsOpened = !endTimepickerIsOpened">
             <i class="fa fa-clock-o"></i>
           </span>
         </p>
+      </div>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" placeholder="Add delivery time in minutes" ng-model="newRestaurantDeliveryTime">
       </div>
     </div>
     <p class="form-group">
