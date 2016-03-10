@@ -55,7 +55,14 @@
                   <tbody>
                     <tr ng-repeat="mealOptionFlavor in newMealOption.relevantFlavors">
                       <td>{{ (getItemById(mealOptionFlavors, mealOptionFlavor) || {}).name }}</td>
-                      <td><input type="text" class="form-control" ng-model="flavorsPrices[newMealOption._id + '_' + mealOptionFlavor]" placeholder="Add the price here"/></td>
+                      <td><input type="text" class="form-control" ng-model="flavorsPrices[newMealOption._id + '_' + mealOptionFlavor]" ng-change="flavorPriceChanged(newMealOption._id + '_' + mealOptionFlavor)" placeholder="Add the price here"/></td>
+                      <td>
+                        <div class="checkbox">
+                          <label>
+                            <input type="checkbox" ng-model="flavorsActives[newMealOption._id + '_' + mealOptionFlavor]"> Is Active
+                          </label>
+                        </div>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -101,7 +108,7 @@
               <ul>
                 <li ng-repeat="mealOption in meal.mealOptions">
                   {{ (getItemById(mealOptions, mealOption.mealOption) || {}).name }}
-                  <ul ng-repeat="mealOptionFlavor in mealOption.mealOptionFlavors">
+                  <ul ng-repeat="mealOptionFlavor in mealOption.mealOptionFlavors | filter: { active: true }">
                     <li>
                       {{ (getItemById(mealOptionFlavors, mealOptionFlavor.mealOptionFlavor) || {}).name }}: {{ mealOptionFlavor.price }}
                     </li>

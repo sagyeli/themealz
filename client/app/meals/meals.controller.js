@@ -13,6 +13,7 @@ angular.module('themealzApp')
     $scope.newMealPrice = null;
     $scope.newMealActive = true;
 
+    $scope.flavorsActives = {};
     $scope.flavorsPrices = {};
 
     $http.get('/api/meals').success(function(meals) {
@@ -36,13 +37,14 @@ angular.module('themealzApp')
     });
 
     $scope.addOrEditMeal = function() {
-      $http[$scope.targetMeal ? 'put' : 'post']('/api/meals' + ($scope.targetMeal ? '/' + $scope.targetMeal._id : ''), { label: $scope.newMealLabel, mealOptions: $scope.newMealOptionsIds ? $scope.map($scope.newMealOptionsIds, function(item) { return { mealOption: { _id: item._id }, mealOptionFlavors: $scope.map(item.relevantFlavors, function(flavorId) { return { mealOptionFlavor: flavorId, price: parseFloat($scope.flavorsPrices[item._id + '_' + flavorId]) } }) }; }) : null, restaurant: $scope.newRestaurantId ? $scope.newRestaurantId._id : null, price: parseFloat($scope.newMealPrice), active: $scope.newMealActive });
+      $http[$scope.targetMeal ? 'put' : 'post']('/api/meals' + ($scope.targetMeal ? '/' + $scope.targetMeal._id : ''), { label: $scope.newMealLabel, mealOptions: $scope.newMealOptionsIds ? $scope.map($scope.newMealOptionsIds, function(item) { return { mealOption: { _id: item._id }, mealOptionFlavors: $scope.map(item.relevantFlavors, function(flavorId) { return { mealOptionFlavor: flavorId, price: parseFloat($scope.flavorsPrices[item._id + '_' + flavorId]), active: !!$scope.flavorsActives[item._id + '_' + flavorId] } }) }; }) : null, restaurant: $scope.newRestaurantId ? $scope.newRestaurantId._id : null, price: parseFloat($scope.newMealPrice), active: $scope.newMealActive });
       $scope.newMealLabel = null;
       $scope.newRestaurantId = null;
       $scope.newMealOptionsIds = [];
       $scope.newMealPrice = null;
       $scope.newMealActive = true;
 
+      $scope.flavorsActives = {};
       $scope.flavorsPrices = {};
     };
 
@@ -74,12 +76,14 @@ angular.module('themealzApp')
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.children, '_id');
         $scope.newMealOptionsGroupActive = item.active;
 
+        $scope.flavorsActives = {};
         $scope.flavorsPrices = {};
         var i = $scope.targetMeal.mealOptions.length;
         while (i--) {
           var mealOption = $scope.targetMeal.mealOptions[i],
             j = mealOption.mealOptionFlavors.length;
             while(j--) {
+              $scope.flavorsActives[mealOption.mealOption + '_' + mealOption.mealOptionFlavors[j].mealOptionFlavor] = mealOption.mealOptionFlavors[j].active;
               $scope.flavorsPrices[mealOption.mealOption + '_' + mealOption.mealOptionFlavors[j].mealOptionFlavor] = mealOption.mealOptionFlavors[j].price;
             }
         }
@@ -93,6 +97,7 @@ angular.module('themealzApp')
         $scope.newMealPrice = null;
         $scope.newMealActive = true;
 
+        $scope.flavorsActives = {};
         $scope.flavorsPrices = {};
       }
     };
@@ -105,6 +110,10 @@ angular.module('themealzApp')
       }
 
       return summary.join('|');
+    };
+
+    $scope.flavorPriceChanged = function(maelFlavorId) {
+      $scope.flavorsActives[maelFlavorId] = !!parseInt($scope.flavorsPrices[maelFlavorId]);
     };
 
     $scope.$on('$destroy', function () {
@@ -138,7 +147,7 @@ angular.module('themealzApp')
       while (i--) {
         if (arr[i]) {
           if (Array.isArray(val) && val.indexOf(arr[i][key]) >= 0) {
-            results.push(arr[i]);
+            results.unshift(arr[i]);
           }
           else if (arr[i][key] === val) {
             return arr[i];
@@ -157,7 +166,7 @@ angular.module('themealzApp')
       var results = [],
         i = arr.length;
       while (i--) {
-        results.push(arr[i] ? arr[i][key] : null)
+        results.unshift(arr[i] ? arr[i][key] : null)
       }
 
       return results;
@@ -171,7 +180,7 @@ angular.module('themealzApp')
       var results = [],
         i = arr.length;
       while (i--) {
-        results.push(arr[i] ? func(arr[i]) : null)
+        results.unshift(arr[i] ? func(arr[i]) : null)
       }
 
       return results;
