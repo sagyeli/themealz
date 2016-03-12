@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('themealzApp')
-  .directive('footer', function () {
+  .directive('footer', function() {
     return {
       templateUrl: 'components/footer/footer.html',
       restrict: 'E',

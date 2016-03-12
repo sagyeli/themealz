@@ -18,18 +18,18 @@ describe('Login View', function() {
   };
 
   beforeEach(function(done) {
-    UserModel.removeAsync()
+    UserModel.remove()
       .then(function() {
-        return UserModel.createAsync(testUser);
+        return UserModel.create(testUser)
+          .then(loadPage);
       })
-      .then(loadPage)
+      // .then(loadPage)
       .finally(function() {
         browser.wait(function() {
           //console.log('waiting for angular...');
           return browser.executeScript('return !!window.angular');
 
         }, 5000).then(done);
-
       });
   });
 

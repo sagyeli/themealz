@@ -28,7 +28,7 @@
       "should": false,
       "expect": false
     },
-    "generatorVersion": "3.2.0",
+    "generatorVersion": "3.4.2",
     "endpointDirectory": "server/api/",
     "insertModels": true,
     "registerModelsFile": "server/sqldb/index.js",

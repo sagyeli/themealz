@@ -1,32 +1,33 @@
 'use strict';
 
+class LoginController {
+  constructor(Auth, $location) {
+    this.user = {};
+    this.errors = {};
+    this.submitted = false;
+
+    this.Auth = Auth;
+    this.$location = $location;
+  }
+
+  login(form) {
+    this.submitted = true;
+
+    if (form.$valid) {
+      this.Auth.login({
+        email: this.user.email,
+        password: this.user.password
+      })
+      .then(() => {
+        // Logged in, redirect to home
+        this.$location.path('/');
+      })
+      .catch(err => {
+        this.errors.other = err.message;
+      });
+    }
+  }
+}
+
 angular.module('themealzApp')
-  .controller('LoginCtrl', function ($scope, Auth, $location, $cookieStore) {
-    $scope.user = {};
-    $scope.errors = {};
-
-    $scope.login = function(form) {
-      $scope.submitted = true;
-
-      if(form.$valid) {
-        Auth.login({
-          email: $scope.user.email,
-          password: $scope.user.password
-        })
-        .then( function() {
-          // Logged in, redirect to home
-          if (typeof $cookieStore.get('returnUrl') != 'undefined' && $cookieStore.get('returnUrl') != '') {
-            $location.path($cookieStore.get('returnUrl'));
-            $cookieStore.remove('returnUrl');
-          }
-          else {
-            $location.path('/');
-          }
-        })
-        .catch( function(err) {
-          $scope.errors.other = err.message;
-        });
-      }
-    };
-
-  });
+  .controller('LoginController', LoginController);

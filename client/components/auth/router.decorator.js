@@ -3,16 +3,16 @@
 (function() {
 
 angular.module('themealzApp.auth')
-  .run(function($rootScope, $location, Auth) {    
+  .run(function($rootScope, $location, Auth) {
     // Redirect to login if route requires auth and the user is not logged in, or doesn't have required role
-    $rootScope.$on('$routeChangeStart', function(event, next) {    
-      if(!next.authenticate) {
+    $rootScope.$on('$routeChangeStart', function(event, next) {
+      if (!next.authenticate) {
         return;
       }
 
-      if(typeof next.authenticate === 'string') {
+      if (typeof next.authenticate === 'string') {
         Auth.hasRole(next.authenticate, _.noop).then(has => {
-          if(has) {
+          if (has) {
             return;
           }
 
@@ -23,7 +23,7 @@ angular.module('themealzApp.auth')
         });
       } else {
         Auth.isLoggedIn(_.noop).then(is => {
-          if(is) {
+          if (is) {
             return;
           }
 
@@ -31,7 +31,7 @@ angular.module('themealzApp.auth')
           $location.path('/');
         });
       }
-    });    
+    });
   });
 
 })();

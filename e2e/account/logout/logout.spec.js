@@ -16,9 +16,9 @@ describe('Logout View', function() {
   };
 
   beforeEach(function(done) {
-    UserModel.removeAsync()
+    UserModel.remove()
       .then(function() {
-        return UserModel.createAsync(testUser);
+        return UserModel.create(testUser);
       })
       .then(function() {
         return login(testUser);
