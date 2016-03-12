@@ -13,9 +13,9 @@ function authInterceptor($rootScope, $q, $cookies, $location, Util) {
       return config;
     },
 
-    // Intercept 401s and redirect you to login
+    // Intercept 401s or 403s and redirect you to login
     responseError(response) {
-      if (response.status === 401) {
+      if (response.status === 401 || response.status === 403) {
         $location.path('/login');
         // remove any stale tokens
         $cookies.remove('token');
