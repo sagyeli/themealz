@@ -4,24 +4,19 @@ class NavbarController {
   //start-non-standard
   menu = [{
     'title': 'Meal Option',
-    'link': '/',
-    'forAllusers' : false
+    'link': '/'
   }, {
     'title': 'Meal Option Flavors',
-    'link': '/mealOptionFlavors',
-    'forAllusers' : false
+    'link': '/mealOptionFlavors'
   }, {
     'title': 'Restaurants',
-    'link': '/restaurants',
-    'forAllusers' : true
+    'link': '/restaurants'
   }, {
     'title': 'Meal Options Groups',
-    'link': '/mealOptionsGroups',
-    'forAllusers' : false
+    'link': '/mealOptionsGroups'
   }, {
     'title': 'Meals',
-    'link': '/meals',
-    'forAllusers' : true
+    'link': '/meals'
   }];
 
   isCollapsed = true;

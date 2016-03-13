@@ -5,7 +5,7 @@ var Restaurant = require('./restaurant.model');
 
 // Get list of restaurants
 exports.index = function(req, res) {
-  Restaurant.find(function (err, restaurants) {
+  Restaurant.find(req.user.role === 'admin' ? {} : { admin: req.user._id }, function (err, restaurants) {
     if(err) { return handleError(res, err); }
     return res.status(200).json(restaurants);
   });
@@ -13,7 +13,7 @@ exports.index = function(req, res) {
 
 // Get a single restaurant
 exports.show = function(req, res) {
-  Restaurant.findById(req.params.id, function (err, restaurant) {
+  Restaurant.findOne(Object.assign({ _id: req.params.id }, req.user.role === 'admin' ? {} : { admin: req.user._id }), function (err, restaurant) {
     if(err) { return handleError(res, err); }
     if(!restaurant) { return res.status(404).send('Not Found'); }
     return res.json(restaurant);
@@ -22,6 +22,8 @@ exports.show = function(req, res) {
 
 // Creates a new restaurant in the DB.
 exports.create = function(req, res) {
+  req.body.admin = req.user._id;
+
   Restaurant.create(req.body, function(err, restaurant) {
     if(err) { return handleError(res, err); }
     return res.status(201).json(restaurant);
@@ -31,7 +33,7 @@ exports.create = function(req, res) {
 // Updates an existing restaurant in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
-  Restaurant.findById(req.params.id, function (err, restaurant) {
+  Restaurant.findOne(Object.assign({ _id: req.params.id }, req.user.role === 'admin' ? {} : { admin: req.user._id }), function (err, restaurant) {
     if (err) { return handleError(res, err); }
     if(!restaurant) { return res.status(404).send('Not Found'); }
     var updated = _.merge(restaurant, req.body, function(a, b) { return b; });
@@ -44,7 +46,7 @@ exports.update = function(req, res) {
 
 // Deletes a restaurant from the DB.
 exports.destroy = function(req, res) {
-  Restaurant.findById(req.params.id, function (err, restaurant) {
+  Restaurant.findOne(Object.assign({ _id: req.params.id }, req.user.role === 'admin' ? {} : { admin: req.user._id }), function (err, restaurant) {
     if(err) { return handleError(res, err); }
     if(!restaurant) { return res.status(404).send('Not Found'); }
     restaurant.remove(function(err) {
