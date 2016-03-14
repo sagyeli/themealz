@@ -10,8 +10,9 @@
             <th>Address</th>
             <th>Opening Start Time</th>
             <th>Opening End Time</th>
-            <th>Delivery Time (in minutes)</th>
+            <th>Delivery Time</th>
             <th>GPS Location</th>
+            <th>User's E-mail</th>
             <th>Is Active?</th>
             <th><a href="" ng-click="onTargetRestaurantChanged(); targetRestaurant = null">Clear Selection</a></th>
           </tr>
@@ -23,9 +24,12 @@
             <td>{{ restaurant.address }}</td>
             <td>{{ restaurant.startTime.toLocaleTimeString() }}</td>
             <td>{{ restaurant.endTime.toLocaleTimeString() }}</td>
-            <td>{{ restaurant.deliveryTime }}</td>
+            <td>{{ restaurant.deliveryTime }} minutes</td>
             <td>
               {{ restaurant.latitude }}{{ restaurant.latitude && restaurant.longitude ? ', ' : '' }}{{ restaurant.longitude }}
+            </td>
+            <td>
+              {{ (getItemById(users, restaurant.admin) || {}).email }}
             </td>
             <td>{{ restaurant.active }}</td>
             <td><button type="button" class="close" ng-click="deleteRestaurant(restaurant); $event.stopPropagation();">&times;</button></td>
@@ -92,6 +96,19 @@
         options="mealOptionsGroup.name for mealOptionsGroup in mealOptionsGroups"
         change="onMealOptionsGroupsChanged()"
         data-multiple="true"
+        data-compare-by="_id"
+        scroll-after-rows="5"
+        filter-after-rows="5"
+        max-width="100"
+        tabindex="-1">
+      </multiselect>
+    </p>
+    <p class="form-group">
+      <label for="user_selector">Select user:</label>
+      <multiselect
+        ng-model="newUser"
+        options="user.email for user in users"
+        change="onUserChanged()"
         data-compare-by="_id"
         scroll-after-rows="5"
         filter-after-rows="5"

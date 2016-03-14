@@ -3,6 +3,9 @@
 angular.module('themealzApp')
   .controller('RestaurantsCtrl', function ($scope, $http, socket) {
     $scope.restaurants = [];
+    $scope.mealOptionsGroups = [];
+    $scope.mealOptions = [];
+    $scope.users = [];
     $scope.newRestaurantActive = true;
 
     $http.get('/api/restaurants').success(function(restaurants) {
@@ -28,6 +31,11 @@ angular.module('themealzApp')
       socket.syncUpdates('mealOption', $scope.mealOptions);
     });
 
+    $http.get('/api/users').success(function(users) {
+      $scope.users = users;
+      socket.syncUpdates('user', $scope.users);
+    });
+
     $scope.addOrEditRestaurant = function() {
       if($scope.newRestaurantTitle === '') {
         return;
@@ -40,7 +48,7 @@ angular.module('themealzApp')
         $scope.newRestaurantEndTime.setSeconds(0);
       }
 
-      $http[$scope.targetRestaurant ? 'put' : 'post']('/api/restaurants' + ($scope.targetRestaurant ? '/' + $scope.targetRestaurant._id : ''), { name: $scope.newRestaurantTitle, info: $scope.newRestaurantInfo, address: $scope.newRestaurantAddress, startTime: $scope.newRestaurantStartTime, endTime: $scope.newRestaurantEndTime, deliveryTime: $scope.newRestaurantDeliveryTime, latitude: parseInt($scope.newRestaurantLatitude), longitude: parseInt($scope.newRestaurantLongitude), mealOptions: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, mealOptionsGroups: $scope.newMealOptionsGroups ? $scope.pluck($scope.newMealOptionsGroups, '_id') : null, active: $scope.newRestaurantActive });
+      $http[$scope.targetRestaurant ? 'put' : 'post']('/api/restaurants' + ($scope.targetRestaurant ? '/' + $scope.targetRestaurant._id : ''), { name: $scope.newRestaurantTitle, info: $scope.newRestaurantInfo, address: $scope.newRestaurantAddress, startTime: $scope.newRestaurantStartTime, endTime: $scope.newRestaurantEndTime, deliveryTime: $scope.newRestaurantDeliveryTime, latitude: parseInt($scope.newRestaurantLatitude), longitude: parseInt($scope.newRestaurantLongitude), mealOptions: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, mealOptionsGroups: $scope.newMealOptionsGroups ? $scope.pluck($scope.newMealOptionsGroups, '_id') : null, admin: $scope.newUser, active: $scope.newRestaurantActive });
       $scope.targetRestaurant = '';
       $scope.newRestaurantTitle = '';
       $scope.newRestaurantInfo = '';
@@ -52,6 +60,7 @@ angular.module('themealzApp')
       $scope.newRestaurantLongitude = null;
       $scope.newMealOptionChildrenIds = null;
       $scope.newMealOptionsGroups = null;
+      $scope.newUser = null;
       $scope.newRestaurantActive = true;
     };
 
@@ -83,6 +92,7 @@ angular.module('themealzApp')
         $scope.newRestaurantLongitude = item.longitude;
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.mealOptions, '_id');
         $scope.newMealOptionsGroups = $scope.getItemsByProperty($scope.mealOptionsGroups, item.mealOptionsGroups, '_id');
+        $scope.newUser = $scope.getItemById($scope.users, item.admin);
         $scope.newRestaurantActive = item.active;
 
         restaurant.selected = true;
@@ -98,6 +108,7 @@ angular.module('themealzApp')
         $scope.newRestaurantLongitude = null;
         $scope.newMealOptionChildrenIds = null;
         $scope.newMealOptionsGroups = null;
+        $scope.newUser = null;
         $scope.newRestaurantActive = true;
       }
     };
