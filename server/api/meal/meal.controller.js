@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Meal = require('./meal.model');
+var Restaurant = require('./../restaurant/restaurant.model');
 
 // Get list of meals
 exports.index = function(req, res) {
@@ -24,7 +25,11 @@ exports.show = function(req, res) {
 exports.create = function(req, res) {
   Meal.create(req.body, function(err, meal) {
     if(err) { return handleError(res, err); }
-    return res.status(201).json(meal);
+    Restaurant.findOne(Object.assign({ _id: meal.restaurant }, req.user.role === 'admin' ? {} : { admin: req.user._id }), function (err, restaurant) {
+      if(err) { return handleError(res, err); }
+      if(!restaurant) { return res.status(404).send('Not Found'); }
+      return res.status(201).json(meal);
+    });
   });
 };
 
@@ -34,10 +39,14 @@ exports.update = function(req, res) {
   Meal.findById(req.params.id, function (err, meal) {
     if (err) { return handleError(res, err); }
     if(!meal) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(meal, req.body, function(a, b) { return b; });
-    updated.save(function (err) {
+    Restaurant.findOne(Object.assign({ _id: meal.restaurant }, req.user.role === 'admin' ? {} : { admin: req.user._id }), function (err, restaurant) {
       if (err) { return handleError(res, err); }
-      return res.status(200).json(meal);
+      if(!restaurant) { return res.status(404).send('Not Found'); }
+      var updated = _.merge(meal, req.body, function(a, b) { return b; });
+      updated.save(function (err) {
+        if (err) { return handleError(res, err); }
+        return res.status(200).json(meal);
+      });
     });
   });
 };
@@ -47,9 +56,13 @@ exports.destroy = function(req, res) {
   Meal.findById(req.params.id, function (err, meal) {
     if(err) { return handleError(res, err); }
     if(!meal) { return res.status(404).send('Not Found'); }
-    meal.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.status(204).send('No Content');
+    Restaurant.findOne(Object.assign({ _id: meal.restaurant }, req.user.role === 'admin' ? {} : { admin: req.user._id }), function (err, restaurant) {
+      if (err && req.user.role !== 'admin') { return handleError(res, err); }
+      if(!restaurant && req.user.role !== 'admin') { return res.status(404).send('Not Found'); }
+      meal.remove(function(err) {
+        if(err) { return handleError(res, err); }
+        return res.status(204).send('No Content');
+      });
     });
   });
 };

@@ -84,41 +84,46 @@
     </div>
 
     <div class="col-sm-9" style="max-height: 640px; overflow-y: auto;">
-      <table class="table">
-        <thead class="thead-default">
-          <tr>
-            <th>Label</th>
-            <th>Restaurant Name</th>
-            <th>Meal Options</th>
-            <th>Price</th>
-            <th>Flavors</th>
-            <th>Is Active?</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="meal in meals" ng-click="onTargetMealChanged(meal)" data-toggle="modal" data-target="#myModal" ng-class="{ active: meal.selected }">
-            <td>{{ meal.label }}</td>
-            <td>{{ getItemById(restaurants, meal.restaurant).name }}</td>
-            <td>{{ pluck(getItemsByProperty(mealOptions, pluck(meal.mealOptions, 'mealOption'), '_id'), 'name').join(', ') }}</td>
-            <td>{{ meal.price }}</td>
-            <td>
-              <ul>
-                <li ng-repeat="mealOption in meal.mealOptions">
-                  {{ (getItemById(mealOptions, mealOption.mealOption) || {}).name }}
-                  <ul ng-repeat="mealOptionFlavor in mealOption.mealOptionFlavors | filter: { active: true }">
-                    <li>
-                      {{ (getItemById(mealOptionFlavors, mealOptionFlavor.mealOptionFlavor) || {}).name }}: {{ mealOptionFlavor.price }}
+      <ul class="nav nav-tabs">
+        <li class="{{ restaurantsTab.active ? 'active' : '' }}" ng-repeat="restaurantsTab in restaurantsTabs"><a ng-click="selectRestaurantsTab(restaurantsTab)" data-toggle="tab">{{ restaurantsTab.name }}</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane{{ restaurantsTab.active ? ' active' : '' }}" ng-repeat="restaurantsTab in restaurantsTabs">
+          <table class="table">
+            <thead class="thead-default">
+              <tr>
+                <th>Label</th>
+                <th>Meal Options</th>
+                <th>Price</th>
+                <th>Flavors</th>
+                <th>Is Active?</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="meal in meals | filter: { restaurant: restaurantsTab.id } " ng-click="onTargetMealChanged(meal)" data-toggle="modal" data-target="#myModal" ng-class="{ active: meal.selected }">
+                <td>{{ meal.label }}</td>
+                <td>{{ pluck(getItemsByProperty(mealOptions, pluck(meal.mealOptions, 'mealOption'), '_id'), 'name').join(', ') }}</td>
+                <td>{{ meal.price }}</td>
+                <td>
+                  <ul>
+                    <li ng-repeat="mealOption in meal.mealOptions">
+                      {{ (getItemById(mealOptions, mealOption.mealOption) || {}).name }}
+                      <ul ng-repeat="mealOptionFlavor in mealOption.mealOptionFlavors | filter: { active: true }">
+                        <li>
+                          {{ (getItemById(mealOptionFlavors, mealOptionFlavor.mealOptionFlavor) || {}).name }}: {{ mealOptionFlavor.price }}
+                        </li>
+                      </ul>
                     </li>
                   </ul>
-                </li>
-              </ul>
-            </td>
-            <td>{{ meal.active }}</td>
-            <td><button type="button" class="close" ng-click="deleteMeal(meal); $event.stopPropagation();">&times;</button></td>
-          </tr>
-        </tbody>
-      </table>
+                </td>
+                <td>{{ meal.active }}</td>
+                <td><button type="button" class="close" ng-click="deleteMeal(meal); $event.stopPropagation();">&times;</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>

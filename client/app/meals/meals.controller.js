@@ -16,6 +16,8 @@ angular.module('themealzApp')
     $scope.flavorsActives = {};
     $scope.flavorsPrices = {};
 
+    $scope.restaurantsTabs = [];
+
     $http.get('/api/meals').success(function(meals) {
       $scope.meals = meals;
       socket.syncUpdates('meal', $scope.meals);
@@ -115,6 +117,27 @@ angular.module('themealzApp')
     $scope.flavorPriceChanged = function(maelFlavorId) {
       $scope.flavorsActives[maelFlavorId] = !!parseInt($scope.flavorsPrices[maelFlavorId]);
     };
+
+    $scope.selectRestaurantsTab = function(restaurantsTab) {
+      var i = $scope.restaurantsTabs.length;
+      while(i--) {
+          $scope.restaurantsTabs[i].active = $scope.restaurantsTabs[i] === restaurantsTab;
+      }
+    };
+
+    $scope.$watch('restaurants', function(restaurants) {
+      $scope.restaurantsTabs = $scope.map(restaurants, function(restaurant) {
+        return {
+          id: restaurant._id,
+          name: restaurant.name
+        }
+      });
+
+      var i = $scope.restaurantsTabs.length;
+      while(i--) {
+          $scope.restaurantsTabs[i].active = i === 0;
+      }
+    });
 
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('meal');
