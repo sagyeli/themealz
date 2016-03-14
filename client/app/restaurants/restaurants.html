@@ -103,7 +103,7 @@
         tabindex="-1">
       </multiselect>
     </p>
-    <p class="form-group">
+    <p class="form-group" ng-show="isAdmin()">
       <label for="user_selector">Select user:</label>
       <multiselect
         ng-model="newUser"
@@ -115,6 +115,7 @@
         max-width="100"
         tabindex="-1">
       </multiselect>
+      <a href="" ng-click="newUser = null">Clear Selection</a>
     </p>
     <p class="form-group">
       <div class="checkbox">

@@ -4,7 +4,7 @@
  */
 
 'use strict';
-import User from '../api/user/user.model';
+/*import User from '../api/user/user.model';
 
 User.find({}).remove()
   .then(() => {
@@ -24,3 +24,4 @@ User.find({}).remove()
       console.log('finished populating users');
     });
   });
+*/

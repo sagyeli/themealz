@@ -1,12 +1,14 @@
 'use strict';
 
 angular.module('themealzApp')
-  .controller('RestaurantsCtrl', function ($scope, $http, socket) {
+  .controller('RestaurantsCtrl', function ($scope, $http, socket, Auth) {
     $scope.restaurants = [];
     $scope.mealOptionsGroups = [];
     $scope.mealOptions = [];
     $scope.users = [];
     $scope.newRestaurantActive = true;
+
+    $scope.isAdmin = Auth.isAdmin;
 
     $http.get('/api/restaurants').success(function(restaurants) {
       function translateDateAttributes(restaurant) {

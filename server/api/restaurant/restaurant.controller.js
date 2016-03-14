@@ -36,6 +36,9 @@ exports.update = function(req, res) {
   Restaurant.findOne(Object.assign({ _id: req.params.id }, req.user.role === 'admin' ? {} : { admin: req.user._id }), function (err, restaurant) {
     if (err) { return handleError(res, err); }
     if(!restaurant) { return res.status(404).send('Not Found'); }
+    if (req.user.role !== 'admin') {
+      req.body.admin = req.user._id;
+    }
     var updated = _.merge(restaurant, req.body, function(a, b) { return b; });
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
