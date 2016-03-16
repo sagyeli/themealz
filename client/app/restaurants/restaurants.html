@@ -30,7 +30,9 @@
                 <li ng-repeat="phoneNumber in restaurant.phoneNumbers">
                   {{ phoneNumber.number }}
                   <ul>
-                    <li>{{ phoneNumber.startTime ? 'From ' + phoneNumber.startTime.toLocaleTimeString() : '' }} {{ phoneNumber.endTime ? 'Until ' + phoneNumber.startTime.toLocaleTimeString() : '' }}</li>
+                    <li ng-if="phoneNumber.sms">SMS notifications</li>
+                    <li ng-if="phoneNumber.voice">Voice notifications</li>
+                    <li ng-if="phoneNumber.startTime || phoneNumber.endTime">{{ phoneNumber.startTime ? 'From ' + phoneNumber.startTime.toLocaleTimeString() : '' }} {{ phoneNumber.endTime ? 'Until ' + phoneNumber.startTime.toLocaleTimeString() : '' }}</li>
                   </ul>
                 </li>
               </ul>

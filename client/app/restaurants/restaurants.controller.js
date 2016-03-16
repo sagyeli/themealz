@@ -114,7 +114,7 @@ angular.module('themealzApp')
         $scope.newRestaurantDeliveryTime = item.deliveryTime;
         $scope.newRestaurantLatitude = item.latitude;
         $scope.newRestaurantLongitude = item.longitude;
-        $scope.newRestaurantPhoneNumbers = [].concat(item.phoneNumbers || []);
+        $scope.newRestaurantPhoneNumbers = $scope.map(item.phoneNumbers, function(phoneNumber) { return Object.assign({}, phoneNumber); } );
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.mealOptions, '_id');
         $scope.newMealOptionsGroups = $scope.getItemsByProperty($scope.mealOptionsGroups, item.mealOptionsGroups, '_id');
         $scope.newUser = $scope.getItemById($scope.users, item.admin);
