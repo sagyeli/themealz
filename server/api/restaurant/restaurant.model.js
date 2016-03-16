@@ -11,6 +11,7 @@ var RestaurantSchema = new Schema({
   longitude: Number,
   startTime: Date,
   endTime: Date,
+  phoneNumbers:[{ number: String, sms: Boolean, voice: Boolean, startTime: Date, endTime: Date }], 
   deliveryTime: { type: Number, require: true, min: 0, default: 0, set: function(value) { return value || 0; } },
   mealOptions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOption' }],
   mealOptionsGroups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOptionsGroup' }],

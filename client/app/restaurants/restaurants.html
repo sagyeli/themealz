@@ -11,7 +11,7 @@
             <th>Opening Start Time</th>
             <th>Opening End Time</th>
             <th>Delivery Time</th>
-            <th>GPS Location</th>
+            <th>Phone Numbers</th>
             <th>User's E-mail</th>
             <th>Is Active?</th>
             <th><a href="" ng-click="onTargetRestaurantChanged(); targetRestaurant = null">Clear Selection</a></th>
@@ -26,7 +26,14 @@
             <td>{{ restaurant.endTime.toLocaleTimeString() }}</td>
             <td>{{ restaurant.deliveryTime }} minutes</td>
             <td>
-              {{ restaurant.latitude }}{{ restaurant.latitude && restaurant.longitude ? ', ' : '' }}{{ restaurant.longitude }}
+              <ul>
+                <li ng-repeat="phoneNumber in restaurant.phoneNumbers">
+                  {{ phoneNumber.number }}
+                  <ul>
+                    <li>{{ phoneNumber.startTime ? 'From ' + phoneNumber.startTime.toLocaleTimeString() : '' }} {{ phoneNumber.endTime ? 'Until ' + phoneNumber.startTime.toLocaleTimeString() : '' }}</li>
+                  </ul>
+                </li>
+              </ul>
             </td>
             <td>
               {{ (getItemById(users, restaurant.admin) || {}).email }}
@@ -76,6 +83,45 @@
     <p class="form-group">
       <input type="text" class="form-control typeahead-lng" placeholder="Longitude" ng-model="newRestaurantLongitude" style="width: 7.5em;">
     </p>
+    <label for="children_selector">Phone numbers (<a href="" ng-click="addPhoneNumber()">add slot</a>):</label>
+    <div class="row" ng-repeat="phoneNumber in newRestaurantPhoneNumbers">
+      <div class="col-sm-3">
+        <input type="text" class="form-control" placeholder="Add number" ng-model="phoneNumber.number">
+      </div>
+      <div class="col-sm-2">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="phoneNumber.sms"> SMS Notifications
+          </label>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="phoneNumber.voice"> Voice Notifications
+          </label>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <p class="input-group">
+          <input type="text" class="form-control" placeholder="Enter from time" datetime-picker="HH:mm" ng-model="phoneNumber.startTime" is-open="phoneNumberStartTimepickerIsOpened[$index]" enable-date="false" close-on-selection="true" />
+          <span class="input-group-addon btn" ng-click="phoneNumberStartTimepickerIsOpened[$index] = !phoneNumberStartTimepickerIsOpened[$index]">
+            <i class="fa fa-clock-o"></i>
+          </span>
+        </p>
+      </div>
+      <div class="col-sm-2">
+        <p class="input-group">
+          <input type="text" class="form-control" placeholder="Enter until time" datetime-picker="HH:mm" ng-model="phoneNumber.endTime" is-open="phoneNumberStopTimepickerIsOpened[$index]" enable-date="false" close-on-selection="true" />
+          <span class="input-group-addon btn" ng-click="phoneNumberStopTimepickerIsOpened[$index] = !phoneNumberStopTimepickerIsOpened[$index]">
+            <i class="fa fa-clock-o"></i>
+          </span>
+        </p>
+      </div>
+      <div class="col-sm-1">
+        <button type="button" class="close" ng-click="deletePhoneNumber($index);">&times;</button>
+      </div>
+    </div>
     <p class="form-group">
       <label for="children_selector">Select children meal options:</label>
       <multiselect
