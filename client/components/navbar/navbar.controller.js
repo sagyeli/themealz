@@ -15,6 +15,9 @@ class NavbarController {
     'title': 'Meal Options Groups',
     'link': '/mealOptionsGroups'
   }, {
+    'title': 'Meal Option Flavors Groups',
+    'link': '/mealOptionFlavorsGroups'
+  }, {
     'title': 'Meals',
     'link': '/meals'
   }];
