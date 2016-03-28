@@ -6,6 +6,7 @@ var mongoose = require('mongoose'),
 var MealOptionSchema = new Schema({
   name: String,
   label: String,
+  rootLabel: String,
   iconUrl: String,
   info: String,
   children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOption' }],

@@ -15,6 +15,7 @@
           <tr>
             <th>Meal Option Name</th>
             <th>Meal Option Label</th>
+            <th>Meal Option Root Label</th>
             <th>Meal Option Info</th>
             <th>Children Meal Options</th>
             <th>Meal Options Flavours</th>
@@ -27,6 +28,7 @@
           <tr ng-repeat="mealOption in mealOptions" ng-click="onTargetMealOptionChanged(mealOption)" ng-class="{ active: mealOption.selected }">
             <td>{{ mealOption.name }}</td>
             <td>{{ mealOption.label }}</td>
+            <td>{{ mealOption.rootLabel }}</td>
             <td>{{ mealOption.info }}</td>
             <td>{{ pluck(getItemsByProperty(mealOptions, mealOption.children, '_id'), 'name').join(', ') }}</td>
             <td>{{ pluck(getItemsByProperty(mealOptionFlavors, mealOption.relevantFlavors, '_id'), 'name').join(', ') }}</td>
@@ -45,6 +47,9 @@
     </p>
     <p class="form-group">
       <input type="text" class="form-control" placeholder="Add a label here (to be present on mobile devices)" ng-model="newMealOptionLabel">
+    </p>
+    <p class="form-group">
+      <input type="text" class="form-control" placeholder="Add a root label here" ng-model="newMealOptionRootLabel">
     </p>
     <p class="form-group">
       <textarea class="form-control" rows="3" placeholder="Add some information here" ng-model="newMealOptionInfo"></textarea>

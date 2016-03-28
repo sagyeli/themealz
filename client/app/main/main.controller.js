@@ -21,10 +21,11 @@ angular.module('themealzApp')
       if($scope.newMealOptionTitle === '' && $scope.newMealOptionLabel === '') {
         return;
       }
-      $http[$scope.targetMealOption ? 'put' : 'post']('/api/mealOptions' + ($scope.targetMealOption ? '/' + $scope.targetMealOption._id : ''), { name: $scope.newMealOptionTitle, label: $scope.newMealOptionLabel, info: $scope.newMealOptionInfo, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, parents: $scope.newMealOptionParentsIds ? $scope.pluck($scope.newMealOptionParentsIds, '_id') : null, relevantFlavors: $scope.newMealOptionFlavorsIds ? $scope.pluck($scope.newMealOptionFlavorsIds, '_id') : null, active: $scope.newMealOptionActive, abstract: $scope.newMealOptionAbstract });
+      $http[$scope.targetMealOption ? 'put' : 'post']('/api/mealOptions' + ($scope.targetMealOption ? '/' + $scope.targetMealOption._id : ''), { name: $scope.newMealOptionTitle, label: $scope.newMealOptionLabel, rootLabel: $scope.newMealOptionRootLabel, info: $scope.newMealOptionInfo, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, parents: $scope.newMealOptionParentsIds ? $scope.pluck($scope.newMealOptionParentsIds, '_id') : null, relevantFlavors: $scope.newMealOptionFlavorsIds ? $scope.pluck($scope.newMealOptionFlavorsIds, '_id') : null, active: $scope.newMealOptionActive, abstract: $scope.newMealOptionAbstract });
       $scope.targetMealOption = '';
       $scope.newMealOptionTitle = '';
       $scope.newMealOptionLabel = '';
+      $scope.newMealOptionRootLabel = '';
       $scope.newMealOptionInfo = '';
       $scope.newMealOptionChildrenIds = null;
       $scope.newMealOptionParentsIds = null;
@@ -53,6 +54,7 @@ angular.module('themealzApp')
         var item = $scope.getItemById($scope.mealOptions, $scope.targetMealOption._id);
         $scope.newMealOptionTitle = item.name;
         $scope.newMealOptionLabel = item.label;
+        $scope.newMealOptionRootLabel = item.rootLabel;
         $scope.newMealOptionInfo = item.info;
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.children, '_id');
         $scope.newMealOptionParentsIds = (function() { var i = $scope.mealOptions.length, mealOptions = []; while(i--) { if ($scope.mealOptions[i].children && $scope.mealOptions[i].children.indexOf(item._id) >= 0) { mealOptions.unshift($scope.mealOptions[i]); } } return mealOptions; })();
@@ -65,6 +67,7 @@ angular.module('themealzApp')
       else {
         $scope.newMealOptionTitle = '';
         $scope.newMealOptionLabel = '';
+        $scope.newMealOptionRootLabel = '';
         $scope.newMealOptionInfo = '';
         $scope.newMealOptionChildrenIds = null;
         $scope.newMealOptionParentsIds = null;

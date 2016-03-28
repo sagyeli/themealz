@@ -66,7 +66,20 @@ exports.showChildren = function(req, res) {
     }
   };
 
-  MealOption.findOne({ _id: req.params.id, active: true }, function(err, mealOption) {
+  var searchParams = { active: true };
+  switch(req.params.id) {
+    case 'sushi':
+    case 'pizza':
+    case 'falafel':
+    case 'meat':
+      searchParams.rootLabel = req.params.id;
+      break;
+    default:
+      searchParams._id = req.params.id;
+      break;
+  }
+
+  MealOption.findOne(searchParams, function(err, mealOption) {
     if(err) { return handleError(res, err); }
     if(!mealOption) { return res.send(404); }
     MealOption.find({ _id: { $in: mealOption.children }, active: true }, function(err, mealOptions) {
