@@ -7,6 +7,8 @@
           <tr>
             <th>Meal Option flavors Group Name</th>
             <th>Meal Option flavors</th>
+            <th>Minimum Selection</th>
+            <th>Maximum Selection</th>
             <th>Is Active?</th>
             <th><a href="" ng-click="onTargetMealOptionFlavorGroupChanged(); targetMealOptionFlavorsGroup = null;">Clear Selection</a></th>
           </tr>
@@ -15,6 +17,8 @@
           <tr ng-repeat="mealOptionFlavorsGroup in mealOptionFlavorsGroups" ng-click="onTargetMealOptionFlavorsGroupChanged(mealOptionFlavorsGroup)" ng-class="{ active: mealOptionFlavorsGroup.selected }">
             <td>{{ mealOptionFlavorsGroup.name }}</td>
             <td>{{ pluck(getItemsByProperty(mealOptionFlavors, mealOptionFlavorsGroup.children, '_id'), 'name').join(', ') }}</td>
+            <td>{{ mealOptionFlavorsGroup.minSelection }}</td>
+            <td>{{ mealOptionFlavorsGroup.maxSelection }}</td>
             <td>{{ mealOptionFlavorsGroup.active }}</td>
             <td><button type="button" class="close" ng-click="deleteMealOptionFlavorsGroup(mealOptionFlavorsGroup); $event.stopPropagation();">&times;</button></td>
           </tr>
@@ -28,26 +32,32 @@
     <p class="form-group">
       <input type="text" class="form-control" placeholder="Add a title here" ng-model="newMealOptionFlavorsGroupTitle">
     </p>
-    <p class="form-group">
-      <div class="checkbox">
+    <div class="row">
+      <div class="col-sm-4">
+        <label for="children_selector">Select children meal option flavors:</label>
+        <multiselect
+          ng-model="newMealOptionChildrenIds"
+          options="mealOptionFlavor.name for mealOptionFlavor in mealOptionFlavors"
+          data-multiple="true"
+          data-compare-by="_id"
+          scroll-after-rows="5"
+          filter-after-rows="5"
+          max-width="100"
+          tabindex="-1">
+        </multiselect>
+      </div>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" placeholder="Add minimum selections allowed" ng-model="newMinSelection">
+      </div>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" placeholder="Add maximum selections allowed" ng-model="newMaxSelection">
+      </div>
+      <div class="checkbox col-sm-2">
         <label>
           <input type="checkbox" ng-model="newMealOptionFlavorsGroupActive"> Is Active
         </label>
       </div>
-    </p>
-    <p class="form-group">
-      <label for="children_selector">Select children meal option flavors:</label>
-      <multiselect
-        ng-model="newMealOptionChildrenIds"
-        options="mealOptionFlavor.name for mealOptionFlavor in mealOptionFlavors"
-        data-multiple="true"
-        data-compare-by="_id"
-        scroll-after-rows="5"
-        filter-after-rows="5"
-        max-width="100"
-        tabindex="-1">
-      </multiselect>
-    </p>
+    </div>
     <button type="submit" class="btn btn-primary" ng-click="addOrEditMealOptionFlavorsGroup()">{{ targetMealOptionFlavorsGroup ? 'Edit Meal Option flavor' : 'Add New' }}</button>
   </form>
 </div>

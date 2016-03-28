@@ -4,6 +4,8 @@ angular.module('themealzApp')
   .controller('MealOptionFlavorsGroupsCtrl', function ($scope, $http, socket) {
     $scope.mealOptionFlavorsGroups = [];
     $scope.mealOptionFlavors = [];
+    $scope.newMinSelection = null;
+    $scope.newMaxSelection = null;
     $scope.newMealOptionFlavorsGroupActive = true;
 
     $http.get('/api/mealOptionFlavorsGroups').success(function(mealOptionFlavorsGroups) {
@@ -20,10 +22,12 @@ angular.module('themealzApp')
       if($scope.newMealOptionFlavorsGroupTitle === '') {
         return;
       }
-      $http[$scope.targetMealOptionFlavorsGroup ? 'put' : 'post']('/api/mealOptionFlavorsGroups' + ($scope.targetMealOptionFlavorsGroup ? '/' + $scope.targetMealOptionFlavorsGroup._id : ''), { name: $scope.newMealOptionFlavorsGroupTitle, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, active: $scope.newMealOptionFlavorsGroupActive });
+      $http[$scope.targetMealOptionFlavorsGroup ? 'put' : 'post']('/api/mealOptionFlavorsGroups' + ($scope.targetMealOptionFlavorsGroup ? '/' + $scope.targetMealOptionFlavorsGroup._id : ''), { name: $scope.newMealOptionFlavorsGroupTitle, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, minSelection: $scope.newMinSelection, maxSelection: $scope.newMaxSelection, active: $scope.newMealOptionFlavorsGroupActive });
       $scope.targetMealOptionFlavorsGroup = '';
       $scope.newMealOptionFlavorsGroupTitle = '';
       $scope.newMealOptionChildrenIds = null;
+      $scope.newMinSelection = null;
+      $scope.newMaxSelection = null;
       $scope.newMealOptionFlavorsGroupActive = true;
     };
 
@@ -47,6 +51,8 @@ angular.module('themealzApp')
         var item = $scope.getItemById($scope.mealOptionFlavorsGroups, $scope.targetMealOptionFlavorsGroup._id);
         $scope.newMealOptionFlavorsGroupTitle = item.name;
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptionFlavors, item.children, '_id');
+        $scope.newMinSelection = item.minSelection;
+        $scope.newMaxSelection = item.maxSelection;
         $scope.newMealOptionFlavorsGroupActive = item.active;
 
         mealOptionFlavorsGroup.selected = true;
@@ -54,6 +60,8 @@ angular.module('themealzApp')
       else {
         $scope.newMealOptionFlavorsGroupTitle = '';
         $scope.newMealOptionChildrenIds = null;
+        $scope.newMinSelection = null;
+        $scope.newMaxSelection = null;
         $scope.newMealOptionFlavorsGroupActive = true;
       }
     };

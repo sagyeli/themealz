@@ -76,6 +76,12 @@ export function show(req, res) {
 
 // Creates a new MealOptionFlavorsGroup in the DB
 export function create(req, res) {
+  if (req.body.minSelection && req.body.maxSelection) {
+    var minSelection = req.body.minSelection;
+    var maxSelection = req.body.maxSelection;
+    req.body.minSelection = Math.min(minSelection, maxSelection);
+    req.body.maxSelection = Math.max(minSelection, maxSelection);
+  }
   return MealOptionFlavorsGroup.create(req.body)
     .then(respondWithResult(res, 201))
     .catch(handleError(res));
@@ -85,6 +91,12 @@ export function create(req, res) {
 export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
+  }
+  if (req.body.minSelection && req.body.maxSelection) {
+    var minSelection = req.body.minSelection;
+    var maxSelection = req.body.maxSelection;
+    req.body.minSelection = Math.min(minSelection, maxSelection);
+    req.body.maxSelection = Math.max(minSelection, maxSelection);
   }
   return MealOptionFlavorsGroup.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
