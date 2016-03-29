@@ -4,7 +4,7 @@ var _ = require('lodash');
 var OrderMessage = require('./orderMessage.model');
 var twilio = require('twilio');
 var fs = require('fs');
-var twilioConfigInfo = JSON.parse(fs.readFileSync('../../../twilio.conf.js', 'utf8'));
+var twilioConfigInfo = JSON.parse(fs.readFileSync('./twilio.conf.js', 'utf8'));
 var client = new twilio.RestClient(twilioConfigInfo.ACCOUNT_SID, twilioConfigInfo.AUTH_TOKEN);
 
 // Get list of orderMessages
