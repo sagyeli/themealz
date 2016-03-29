@@ -149,7 +149,12 @@ angular.module('themealzApp')
       while (i--) {
         newMealOptionChildrenIds = newMealOptionChildrenIds.concat($scope.getItemsByProperty($scope.mealOptions, $scope.newMealOptionsGroups[i].children, '_id'));
       }
-      $scope.newMealOptionChildrenIds = newMealOptionChildrenIds;
+      i = newMealOptionChildrenIds.length;
+      while(i--) {
+        if ($scope.newMealOptionChildrenIds.indexOf(newMealOptionChildrenIds[i]) < 0) {
+          $scope.newMealOptionChildrenIds.push(newMealOptionChildrenIds[i]);
+        }
+      }
     };
 
     $scope.addPhoneNumber = function() {
