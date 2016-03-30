@@ -27,8 +27,10 @@ exports.show = function(req, res) {
 
 // Creates a new orderMessage in the DB.
 exports.create = function(req, res) {
+console.log(req.body.restaurant);
   Restaurant.findOne({ _id: req.body.restaurant }, function (err, restaurant) {
-    for (var i = 0 ; i < restaurant.phoneNumbers.length ; i++) {
+    if(err) { return handleError(res, err); }
+    for (var i = 0 ; restaurant && i < restaurant.phoneNumbers.length ; i++) {
       var phoneNumber = restaurant.phoneNumbers[i],
         startTimeForCurrentDay = phoneNumber.startTime ? phoneNumber.startTime - (new Date(phoneNumber.startTime)).setHours(0,0,0,0) + (new Date()).setHours(0,0,0,0) : null,
         endTimeForCurrentDay = phoneNumber.endTime ? phoneNumber.endTime - (new Date(phoneNumber.endTime)).setHours(0,0,0,0) + (new Date()).setHours(0,0,0,0) : null,
