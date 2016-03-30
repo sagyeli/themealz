@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var OrderMessageSchema = new Schema({
-  numberTo: String,
+  restaurant: { type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' },
   text: String,
   createdAt: { type: Date, default: Date.now }
 });
