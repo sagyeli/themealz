@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var OrderMessage = require('./orderMessage.model');
-var Restaurant = require('./restaurant.model');
+var Restaurant = require('./../restaurant/restaurant.model');
 var twilio = require('twilio');
 var fs = require('fs');
 var twilioConfigInfo = JSON.parse(fs.readFileSync('./twilio.conf.js', 'utf8'));
@@ -27,7 +27,7 @@ exports.show = function(req, res) {
 
 // Creates a new orderMessage in the DB.
 exports.create = function(req, res) {
-  Restaurant.findOne({ _id: req.body.restaurant }), function (err, restaurant) {
+  Restaurant.findOne({ _id: req.body.restaurant }, function (err, restaurant) {
     for (var i = 0 ; i < restaurant.phoneNumbers.length ; i++) {
       var phoneNumber = restaurant.phoneNumbers[i],
         startTimeForCurrentDay = phoneNumber.startTime ? phoneNumber.startTime - (new Date(phoneNumber.startTime)).setHours(0,0,0,0) + (new Date()).setHours(0,0,0,0) : null,
