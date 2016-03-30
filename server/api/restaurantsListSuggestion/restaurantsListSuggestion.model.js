@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
 
 var RestaurantsListSuggestionSchema = new Schema({
   mealOptions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOption' }],
-  list: [{ restaurant: { name: String }, price: { type: Number, min: 0 }, timeInMinutes: { type: Number, min: 0 }, grade: { type: Number, min: 0, max: 5 } }],
+  list: [{ restaurant: { _id: String, name: String }, price: { type: Number, min: 0 }, timeInMinutes: { type: Number, min: 0 }, grade: { type: Number, min: 0, max: 5 } }],
   createdAt: { type: Date, default: Date.now },
   active: { type: Boolean, default: true }
 });

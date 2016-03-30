@@ -27,7 +27,6 @@ exports.show = function(req, res) {
 
 // Creates a new orderMessage in the DB.
 exports.create = function(req, res) {
-console.log(req.body.restaurant);
   Restaurant.findOne({ _id: req.body.restaurant }, function (err, restaurant) {
     if(err) { return handleError(res, err); }
     for (var i = 0 ; restaurant && i < restaurant.phoneNumbers.length ; i++) {
