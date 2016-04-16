@@ -106,6 +106,20 @@
         tabindex="-1">
       </multiselect>
     </p>
+    <p class="form-group">
+      <label for="children_selector">Or, select meal option flavors groups:</label>
+      <multiselect
+        ng-model="newMealOptionFlavorsGroups"
+        options="mealOptionFlavorsGroup.name for mealOptionFlavorsGroup in mealOptionFlavorsGroups"
+        change="onMealOptionFlavorsGroupsChanged()"
+        data-multiple="true"
+        data-compare-by="_id"
+        scroll-after-rows="5"
+        filter-after-rows="5"
+        max-width="100"
+        tabindex="-1">
+      </multiselect>
+    </p>
     <button type="submit" class="btn btn-primary" ng-click="addOrEditMealOption()">{{ targetMealOption ? 'Edit Meal Option' : 'Add New' }}</button>
   </form>
 </div>

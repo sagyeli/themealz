@@ -11,6 +11,7 @@ var MealOptionSchema = new Schema({
   info: String,
   children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOption' }],
   relevantFlavors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOptionFlavor' }],
+  relevantFlavorsGroups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MealOptionFlavorsGroup' }],
   hasRealChildren: { type: Boolean, default: false },
   imageURL: String,
   active: { type: Boolean, default: true },

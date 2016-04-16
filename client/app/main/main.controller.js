@@ -4,6 +4,7 @@ angular.module('themealzApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
     $scope.mealOptions = [];
     $scope.mealOptionFlavors = [];
+    $scope.mealOptionFlavorsGroups = [];
     $scope.newMealOptionActive = true;
     $scope.newMealOptionAbstract = false;
 
@@ -17,11 +18,16 @@ angular.module('themealzApp')
       socket.syncUpdates('mealOptionFlavor', $scope.mealOptionFlavors);
     });
 
+    $http.get('/api/mealOptionFlavorsGroups').success(function(mealOptionFlavorsGroups) {
+      $scope.mealOptionFlavorsGroups = mealOptionFlavorsGroups;
+      socket.syncUpdates('mealOptionFlavorsGroup', $scope.mealOptionFlavorsGroups);
+    });
+
     $scope.addOrEditMealOption = function() {
       if($scope.newMealOptionTitle === '' && $scope.newMealOptionLabel === '') {
         return;
       }
-      $http[$scope.targetMealOption ? 'put' : 'post']('/api/mealOptions' + ($scope.targetMealOption ? '/' + $scope.targetMealOption._id : ''), { name: $scope.newMealOptionTitle, label: $scope.newMealOptionLabel, rootLabel: $scope.newMealOptionRootLabel, imageURL: $scope.newMealOptionImageURL, info: $scope.newMealOptionInfo, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, parents: $scope.newMealOptionParentsIds ? $scope.pluck($scope.newMealOptionParentsIds, '_id') : null, relevantFlavors: $scope.newMealOptionFlavorsIds ? $scope.pluck($scope.newMealOptionFlavorsIds, '_id') : null, active: $scope.newMealOptionActive, abstract: $scope.newMealOptionAbstract });
+      $http[$scope.targetMealOption ? 'put' : 'post']('/api/mealOptions' + ($scope.targetMealOption ? '/' + $scope.targetMealOption._id : ''), { name: $scope.newMealOptionTitle, label: $scope.newMealOptionLabel, rootLabel: $scope.newMealOptionRootLabel, imageURL: $scope.newMealOptionImageURL, info: $scope.newMealOptionInfo, children: $scope.newMealOptionChildrenIds ? $scope.pluck($scope.newMealOptionChildrenIds, '_id') : null, parents: $scope.newMealOptionParentsIds ? $scope.pluck($scope.newMealOptionParentsIds, '_id') : null, relevantFlavors: $scope.newMealOptionFlavorsIds ? $scope.pluck($scope.newMealOptionFlavorsIds, '_id') : null, relevantFlavorsGroups: $scope.newMealOptionFlavorsGroups ? $scope.pluck($scope.newMealOptionFlavorsGroups, '_id') : null, active: $scope.newMealOptionActive, abstract: $scope.newMealOptionAbstract });
       $scope.targetMealOption = '';
       $scope.newMealOptionTitle = '';
       $scope.newMealOptionLabel = '';
@@ -31,6 +37,7 @@ angular.module('themealzApp')
       $scope.newMealOptionChildrenIds = null;
       $scope.newMealOptionParentsIds = null;
       $scope.newMealOptionFlavorsIds = null;
+      $scope.newMealOptionFlavorsGroups = null;
       $scope.newMealOptionActive = true;
       $scope.newMealOptionAbstract = false;
     };
@@ -61,6 +68,7 @@ angular.module('themealzApp')
         $scope.newMealOptionChildrenIds = $scope.getItemsByProperty($scope.mealOptions, item.children, '_id');
         $scope.newMealOptionParentsIds = (function() { var i = $scope.mealOptions.length, mealOptions = []; while(i--) { if ($scope.mealOptions[i].children && $scope.mealOptions[i].children.indexOf(item._id) >= 0) { mealOptions.unshift($scope.mealOptions[i]); } } return mealOptions; })();
         $scope.newMealOptionFlavorsIds = $scope.getItemsByProperty($scope.mealOptionFlavors, item.relevantFlavors, '_id');
+        $scope.newMealOptionFlavorsGroups = $scope.getItemsByProperty($scope.mealOptionFlavorsGroups, item.relevantFlavorsGroups, '_id');
         $scope.newMealOptionActive = item.active;
         $scope.newMealOptionAbstract = item.abstract;
 
@@ -75,13 +83,34 @@ angular.module('themealzApp')
         $scope.newMealOptionChildrenIds = null;
         $scope.newMealOptionParentsIds = null;
         $scope.newMealOptionFlavorsIds = null;
+        $scope.newMealOptionFlavorsGroups = null;
         $scope.newMealOptionActive = true;
         $scope.newMealOptionAbstract = false;
       }
     };
 
+    $scope.onMealOptionFlavorsGroupsChanged = function() {
+      if (!$scope.newMealOptionFlavorsGroups) {
+        return;
+      }
+
+      var i = $scope.newMealOptionFlavorsGroups.length,
+        newMealOptionFlavorsIds = [];
+      while (i--) {
+        newMealOptionFlavorsIds = newMealOptionFlavorsIds.concat($scope.getItemsByProperty($scope.mealOptions, $scope.newMealOptionFlavorsGroups[i].children, '_id'));
+      }
+      i = newMealOptionFlavorsIds.length;
+      while(i--) {
+        if ($scope.newMealOptionFlavorsIds.indexOf(newMealOptionFlavorsIds[i]) < 0) {
+          $scope.newMealOptionFlavorsIds.push(newMealOptionFlavorsIds[i]);
+        }
+      }
+    };
+
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('mealOption');
+      socket.unsyncUpdates('mealOptionFlavor');
+      socket.unsyncUpdates('mealOptionFlavorsGroup');
     });
 
     $scope.getItemById = function(arr, id) {
