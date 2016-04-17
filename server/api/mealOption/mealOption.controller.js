@@ -101,7 +101,7 @@ function updateChildrenWithFlavors(children, flavors, callback) {
         deferred = q.defer();
       mealOption.relevantFlavors = _.merge(mealOption.relevantFlavors || [], flavors, function(a, b) { return b; });
       mealOption.save(function(err) {
-        if (err) { return handleError(res, err); }
+        if (err) { return handleError(null, err); }
         if (!mealOption.children || mealOption.children.legnth === 0) {
           deferred.resolve();
         }
@@ -135,7 +135,7 @@ function updateParents(mealOption, callback) {
         }
         parentsMealOptions[i].children.push(mealOption._id);
         parentsMealOptions[i].save(function(err) {
-          if (err) { return handleError(res, err); }
+          if (err) { return handleError(null, err); }
           deferred.resolve();
         });
       }
@@ -151,7 +151,7 @@ function updateParents(mealOption, callback) {
 
         parentsMealOptions[i].children.splice(parentsMealOptions[i].children.indexOf(mealOption._id), 1);
         parentsMealOptions[i].save(function(err) {
-          if (err) { return handleError(res, err); }
+          if (err) { return handleError(null, err); }
           deferred.resolve();
         });
       }
