@@ -3,6 +3,7 @@
 var _ = require('lodash');
 var q = require('q');
 var MealOption = require('./mealOption.model');
+var MealOptionFlavor = require('./../mealOptionFlavor/mealOptionFlavor.model');
 
 // Get list of mealOptions
 exports.index = function(req, res) {
@@ -51,9 +52,12 @@ exports.showChildren = function(req, res) {
           deferred = q.defer();
         (function(deferred) {
           MealOption.find({ _id: { $in: mealOption.children }, active: true }, function(err, childrenMealOptions) {
-            getNonAbstractChildren(childrenMealOptions, function(mealOptions) {
-              mealOption.hasRealChildren = mealOptions && mealOptions.length > 0;
-              deferred.resolve();
+            MealOptionFlavor.find({ _id: { $in: mealOption.relevantFlavors }, active: true }, function(err, relevantFlavors) {
+              getNonAbstractChildren(childrenMealOptions, function(mealOptions) {
+                mealOption.hasRealChildren = mealOptions && mealOptions.length > 0;
+                mealOption.hasFlavors = relevantFlavors && relevantFlavors.length > 0;
+                deferred.resolve();
+              });
             });
           });
         })(deferred);
