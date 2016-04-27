@@ -11,6 +11,7 @@
 
 import _ from 'lodash';
 var MealOptionFlavor = require('./mealOptionFlavor.model');
+var MealOption = require('./../mealOption/mealOption.model');
 
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
@@ -73,6 +74,18 @@ export function show(req, res) {
     .then(responseWithResult(res))
     .catch(handleError(res));
 }
+
+// Get the children a single mealOption
+exports.showRelevantsToMealOption = function(req, res) {
+  MealOption.findOne({ _id: req.params.id }, function(err, mealOption) {
+    if(err) { return handleError(res, err); }
+    if(!mealOption) { return res.send(404); }
+    MealOptionFlavor.find({ _id: { $in: mealOption.relevantFlavors }, active: true }, function(err, mealOptionFlavors) {
+      if(err) { return handleError(res, err); }
+      return res.status(200).json(mealOptionFlavors);
+    });
+  });
+};
 
 // Creates a new MealOptionFlavor in the DB
 export function create(req, res) {
