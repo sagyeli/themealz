@@ -47,11 +47,33 @@ exports.create = function(req, res) {
           var list = [],
             i = meals.length;
           while(i--) {
-            var mealMealOptions = _.map(meals[i].mealOptions, function(item) { return item.mealOption.toString(); });
-            if (meals[i].active && mealMealOptions.length === req.body.mealOptions.length && _.difference(mealMealOptions, req.body.mealOptions).length === 0) {
+            var mealMealOptions = _.map(meals[i].mealOptions, function(item) { return item.mealOption.toString(); }),
+              flavorsPriceAddition = 0;
+
+            function checkForFlavorAndSumTheirPrices() {
+              var j = meals[i].mealOptions.length;
+              while(j--) {
+                var flavorsIds = req.body.mealOptionFlavors[meals[i].mealOptions[j].mealOption.toString()]; 
+                if (flavorsIds && flavorsIds.length > 0) {
+                  var k = meals[i].mealOptions[j].mealOptionFlavors.length;
+                  while(k--) {
+                    if (flavorsIds.indexOf(meals[i].mealOptions[j].mealOptionFlavors[k].mealOptionFlavor.toString()) >= 0) {
+                      flavorsPriceAddition += meals[i].mealOptions[j].mealOptionFlavors[k].price;
+                    }
+                    else {
+                      return false;
+                    }
+                  }
+                }
+              }
+
+              return true;
+            }
+
+            if (meals[i].active && mealMealOptions.length === req.body.mealOptions.length && _.difference(mealMealOptions, req.body.mealOptions).length === 0 && checkForFlavorAndSumTheirPrices()) {
               var suggestedRestaurant = _.findWhere(restaurants, { '_id': meals[i].restaurant });
               if (suggestedRestaurant) {
-                list.unshift({ restaurant: { _id: suggestedRestaurant._id, name: suggestedRestaurant.name }, price: meals[i].price, timeInMinutes: 0, grade: 5 });
+                list.unshift({ restaurant: { _id: suggestedRestaurant._id, name: suggestedRestaurant.name }, price: meals[i].price + flavorsPriceAddition, timeInMinutes: 0, grade: 5 });
               }
             }
           }
